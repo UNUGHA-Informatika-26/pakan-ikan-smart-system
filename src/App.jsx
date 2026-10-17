@@ -55,6 +55,7 @@ export default function App() {
   const [loginErr, setLoginErr] = useState('');
 
   const [showRPass, setShowRPass] = useState(false);
+  const [showRPass2, setShowRPass2] = useState(false);
   const [showLPass, setShowLPass] = useState(false);
 
   // Fungsi Toast Notifikasi
@@ -478,13 +479,67 @@ export default function App() {
               <div style={styles.field}><label>Nama Lengkap</label><input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rNama} onChange={e=>setRNama(e.target.value)} /></div>
               <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} /></div>
               <div style={styles.field}><label>Nomor Telepon</label><input style={styles.authInput} type="tel" placeholder="0812..." value={rHp} onChange={e=>setRHp(e.target.value)} /></div>
-              <div style={styles.field}><label>Buat Kata Sandi</label>
-                <input style={styles.authInput} type="password" placeholder="Min. 8 karakter" value={rPass} onChange={e=>setRPass(e.target.value)} />
+              
+              {/* Buat Kata Sandi dengan Ikon Mata */}
+              <div style={styles.field}>
+                <label>Buat Kata Sandi</label>
+                <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+                <input 
+                    style={{ ...styles.authInput, paddingRight: '45px' }} 
+                    type={showRPass ? 'text' : 'password'} 
+                    placeholder="Min. 8 karakter" 
+                    value={rPass} 
+                    onChange={e => setRPass(e.target.value)} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowRPass(!showRPass)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '16px',
+                      color: '#8d9bb8',
+                      zIndex: 5,
+                      padding: '4px'
+                    }}
+                  >
+                    {showRPass ? '🙈' : '👁'}
+                  </button>
+                </div>
               </div>
 
+            {/* Konfirmasi Kata Sandi dengan Ikon Mata */}
               <div style={styles.field}>
                 <label>Konfirmasi Kata Sandi</label>
-                <input style={styles.authInput} type="password" placeholder="Ulangi Kata Sandi" value={rPass2} onChange={e=>setRPass2(e.target.value)} />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <input 
+                    style={{ ...styles.authInput, paddingRight: '45px' }} 
+                    type={showRPass2 ? 'text' : 'password'} 
+                    placeholder="Ulangi Kata Sandi" 
+                    value={rPass2} 
+                    onChange={e => setRPass2(e.target.value)} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowRPass2(!showRPass2)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '16px',
+                      color: '#8d9bb8',
+                      zIndex: 5,
+                      padding: '4px'
+                    }}
+                  >
+                    {showRPass2 ? '🙈' : '👁'}
+                  </button>
+                </div>
               </div>
 
               {regErr && <p style={styles.err}>{regErr}</p>}
@@ -493,6 +548,7 @@ export default function App() {
             <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
           </section>
         )}
+
           {/* 9. MASUK */}
           {currentScreen === 'masuk' && (
             <section className="screen auth-screen" style={styles.screen}>
@@ -500,16 +556,44 @@ export default function App() {
               <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
               <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
                 <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} /></div>
+                
+                {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
                 <div style={styles.field}>
                 <label>Kata Sandi</label>
-                <input style={styles.authInput} type="password" placeholder="Min. 8 karakter" value={lPass} onChange={e=>setLPass(e.target.value)} />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <input 
+                    style={{ ...styles.authInput, paddingRight: '45px' }} 
+                    type={showLPass ? 'text' : 'password'} 
+                    placeholder="Min. 8 karakter" 
+                    value={lPass} 
+                    onChange={e => setLPass(e.target.value)} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => setShowLPass(!showLPass)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      fontSize: '16px',
+                      color: '#8d9bb8',
+                      zIndex: 5,
+                      padding: '4px'
+                    }}
+                  >
+                    {showLPass ? '🙈' : '👁'}
+                  </button>
+                </div>
               </div>
-                {loginErr && <p style={styles.err}>{loginErr}</p>}
-                <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Masuk</button>
-              </form>
-              <p style={{...styles.alt, marginTop:'20px'}}>Belum punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('daftar')} type="button">Daftar di sini</button></p>
-            </section>
-          )}
+
+              {loginErr && <p style={styles.err}>{loginErr}</p>}
+              <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Masuk</button>
+            </form>
+            <p style={{...styles.alt, marginTop:'20px'}}>Belum punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('daftar')} type="button">Daftar di sini</button></p>
+          </section>
+        )}
 
         </div>
 
