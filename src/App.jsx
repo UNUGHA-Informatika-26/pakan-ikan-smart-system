@@ -482,34 +482,45 @@ export default function App() {
               
               {/* Buat Kata Sandi dengan Ikon Mata */}
               <div style={styles.field}>
-                <label>Buat Kata Sandi</label>
-                <div style={{position: 'relative', display: 'flex', alignItems: 'center'}}>
+              <label>Buat Kata Sandi</label>
+              <div style={{ position: 'relative', width: '100%', display: 'block' }}>
                 <input 
-                    style={{ ...styles.authInput, paddingRight: '45px' }} 
-                    type={showRPass ? 'text' : 'password'} 
-                    placeholder="Min. 8 karakter" 
-                    value={rPass} 
-                    onChange={e => setRPass(e.target.value)} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => setShowRPass(!showRPass)}
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      color: '#8d9bb8',
-                      zIndex: 5,
-                     display: 'flex',
-                     alignItems: 'center',
-                     justifyContent: 'center',
-                     padding: '4px'
-                    }}
-                  >
-                   {showLPass ? (
+                  style={{ 
+                    width: '100%', 
+                    padding: '12px 45px 12px 15px', 
+                    boxSizing: 'border-box',
+                    backgroundColor: '#162238',
+                    border: '1px solid #2a3b5c',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }} 
+                  type={showRPass ? 'text' : 'password'} 
+                  placeholder="Min. 8 karakter" 
+                  value={rPass} 
+                  onChange={e => setRPass(e.target.value)} 
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowRPass(!showRPass)}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#8d9bb8',
+                    zIndex: 5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px'
+                  }}
+                >
+                  {showRPass ? (
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
                       <line x1="1" y1="1" x2="23" y2="23"></line>
@@ -524,49 +535,60 @@ export default function App() {
               </div>
             </div>
 
-            {/* Konfirmasi Kata Sandi dengan Ikon Mata */}
-              <div style={styles.field}>
-                <label>Konfirmasi Kata Sandi</label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+           {/* Konfirmasi Kata Sandi dengan Ikon Mata 2D di Pojok Kanan */}
+            <div style={styles.field}>
+              <label>Konfirmasi Kata Sandi</label>
+              <div style={{ position: 'relative', width: '100%', display: 'block' }}>
                 <input 
-                    style={{ ...styles.authInput, paddingRight: '45px' }} 
-                    type={showRPass2 ? 'text' : 'password'} 
-                    placeholder="Ulangi Kata Sandi" 
-                    value={rPass2} 
-                    onChange={e => setRPass2(e.target.value)} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => setShowRPass2(!showRPass2)}
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      color: '#8d9bb8',
-                      zIndex: 5,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '4px'
-                    }}
-                  >
-                   {showLPass ? (
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                )}
-              </button>
+                  style={{ 
+                    width: '100%', 
+                    padding: '12px 45px 12px 15px', 
+                    boxSizing: 'border-box',
+                    backgroundColor: '#162238',
+                    border: '1px solid #2a3b5c',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '14px',
+                    outline: 'none'
+                  }} 
+                  type={showRPass2 ? 'text' : 'password'} 
+                  placeholder="Ulangi Kata Sandi" 
+                  value={rPass2} 
+                  onChange={e => setRPass2(e.target.value)} 
+                />
+                <button 
+                  type="button" 
+                  onClick={() => setShowRPass2(!showRPass2)}
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#8d9bb8',
+                    zIndex: 5,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '4px'
+                  }}
+                >
+                  {showRPass2 ? (
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                      <line x1="1" y1="1" x2="23" y2="23"></line>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
 
               {regErr && <p style={styles.err}>{regErr}</p>}
               <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
@@ -576,19 +598,24 @@ export default function App() {
         )}
 
           {/* 9. MASUK */}
-          {currentScreen === 'masuk' && (
-            <section className="screen auth-screen" style={styles.screen}>
-              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
-              <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
-              <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-                <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} /></div>
-                
-                {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
-                <div style={styles.field}>
+        {currentScreen === 'masuk' && (
+          <section className="screen auth-screen" style={styles.screen}>
+            <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
+            <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
+            <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+              <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} /></div>
+              
+              {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
+              <div style={styles.field}>
                 <label>Kata Sandi</label>
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                <div style={{ position: 'relative', width: '100%', display: 'block' }}>
                   <input 
-                    style={{ ...styles.authInput, paddingRight: '45px' }} 
+                    style={{ 
+                      ...styles.authInput, 
+                      width: '100%', 
+                      paddingRight: '45px', 
+                      boxSizing: 'border-box' 
+                    }} 
                     type={showLPass ? 'text' : 'password'} 
                     placeholder="Min. 8 karakter" 
                     value={lPass} 
@@ -600,10 +627,11 @@ export default function App() {
                     style={{
                       position: 'absolute',
                       right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
                       background: 'none',
                       border: 'none',
                       cursor: 'pointer',
-                      fontSize: '16px',
                       color: '#8d9bb8',
                       zIndex: 5,
                       display: 'flex',
@@ -612,20 +640,20 @@ export default function App() {
                       padding: '4px'
                     }}
                   >
-                   {showLPass ? (
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                    <line x1="1" y1="1" x2="23" y2="23"></line>
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
-                )}
-              </button>
-            </div>
-          </div>
+                    {showLPass ? (
+                      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                        <line x1="1" y1="1" x2="23" y2="23"></line>
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    )}
+                  </button>
+                </div>
+              </div>
 
               {loginErr && <p style={styles.err}>{loginErr}</p>}
               <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Masuk</button>
