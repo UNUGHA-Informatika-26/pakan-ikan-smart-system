@@ -487,7 +487,7 @@ export default function App() {
                 <input 
                   style={{ 
                     width: '100%', 
-                    padding: '12px 48px 12px 15px', //pergantian 
+                    padding: '12px 48px 12px 15px !important',  
                     boxSizing: 'border-box',
                     backgroundColor: '#162238',
                     border: '1px solid #2a3b5c',
@@ -506,7 +506,8 @@ export default function App() {
                   onClick={() => setShowRPass(!showRPass)}
                   style={{
                     position: 'absolute',
-                    right: '10px', // Posisi ikon mata geser pojok kanan 
+                    right: '12px !important', // Posisi ikon mata geser pojok kanan 
+                    left: 'auto !important',  // Mencegah left menimpa posisi right
                     top: '50%',
                     transform: 'translateY(-50%)',
                     background: 'none',
@@ -542,7 +543,7 @@ export default function App() {
                 <input 
                   style={{ 
                     width: '100%', 
-                    padding: '12px 48px 12px 15px', // pergantian
+                    padding: '12px 48px 12px 15px !important', // pergantian dan penambahan important
                     boxSizing: 'border-box',
                     backgroundColor: '#162238',
                     border: '1px solid #2a3b5c',
@@ -561,7 +562,8 @@ export default function App() {
                   onClick={() => setShowRPass2(!showRPass2)}
                   style={{
                     position: 'absolute',
-                    right: '10px',// posisi ikon mata 
+                    right: '12px !important',// posisi ikon mata 
+                    left: 'auto !important',  // Mencegah left menimpa posisi right
                     top: '50%',
                     transform: 'translateY(-50%)',
                     background: 'none',
@@ -613,7 +615,7 @@ export default function App() {
                     style={{ 
                       ...styles.authInput, 
                       width: '100%', 
-                      paddingRight: '48px', // ganti 
+                      paddingRight: '48px !important', // ganti 
                       boxSizing: 'border-box' 
                     }} 
                     type={showLPass ? 'text' : 'password'} 
@@ -626,7 +628,8 @@ export default function App() {
                     onClick={() => setShowLPass(!showLPass)}
                     style={{
                       position: 'absolute',
-                      right: '10px',// possi ikon mata
+                      right: '12px !important', // Paksa posisi ke kanan
+                      left: 'auto !important',  // Mencegah left menimpa posisi right
                       top: '50%',
                       transform: 'translateY(-50%)',
                       background: 'none',
