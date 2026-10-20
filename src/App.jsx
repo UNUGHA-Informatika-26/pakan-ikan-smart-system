@@ -548,15 +548,19 @@ export default function App() {
               <div style={{ position: 'relative', width: '100%', display: 'block' }}>
                 <input 
                   style={{ 
-                    width: '100%', 
-                    padding: '12px 45px 12px 15px !important', // pergantian dan penambahan important
-                    boxSizing: 'border-box',
-                    backgroundColor: '#162238',
-                    border: '1px solid #2a3b5c',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontSize: '14px',
-                    outline: 'none'
+                  width: '100%', 
+                  height: '45px', // Menjaga tinggi input agar tidak ciut/gepeng
+                  paddingTop: '10px',
+                  paddingBottom: '10px',
+                  paddingLeft: '15px',
+                  paddingRight: '45px', // Jarak aman di kanan agar teks tidak menabrak mata
+                  boxSizing: 'border-box',
+                  backgroundColor: '#162238',
+                  border: '1px solid #2a3b5c',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  fontSize: '14px',
+                  outline: 'none'
                   }} 
                   type={showRPass2 ? 'text' : 'password'} 
                   placeholder="Ulangi Kata Sandi" 
@@ -568,19 +572,19 @@ export default function App() {
                   onClick={() => setShowRPass2(!showRPass2)}
                   style={{
                     position: 'absolute',
-                    right: '20px !important',// posisi ikon mata 
-                    left: 'auto !important',  // Mencegah left menimpa posisi right
+                    right: '12px', // Mengunci posisi ikon di pojok kanan
                     top: '50%',
                     transform: 'translateY(-50%)',
-                    background: 'none',
+                    background: 'transparent',
                     border: 'none',
                     cursor: 'pointer',
                     color: '#8d9bb8',
-                    zIndex: 5,
+                    zIndex: 10,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    padding: '4px'
+                    padding: '0',
+                    height: '24px',
                   }}
                 >
                   {showRPass2 ? (
@@ -621,7 +625,7 @@ export default function App() {
                     style={{ 
                       ...styles.authInput, 
                       width: '100%', 
-                      paddingRight: '45px !important', // ganti 
+                      paddingRight: '45px', // ganti 
                       boxSizing: 'border-box' 
                     }} 
                     type={showLPass ? 'text' : 'password'} 
@@ -634,19 +638,20 @@ export default function App() {
                     onClick={() => setShowLPass(!showLPass)}
                     style={{
                       position: 'absolute',
-                      right: '20px !important', // Paksa posisi ke kanan
-                      left: 'auto !important',  // Mencegah left menimpa posisi right
+                      right: '12px', // Mengunci posisi ikon di pojok kanan
                       top: '50%',
                       transform: 'translateY(-50%)',
-                      background: 'none',
+                      background: 'transparent',
                       border: 'none',
                       cursor: 'pointer',
                       color: '#8d9bb8',
-                      zIndex: 5,
+                      zIndex: 10,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '4px'
+                      padding: '0',
+                      height: '24px',
+                      width: '24px'
                     }}
                   >
                     {showLPass ? (
