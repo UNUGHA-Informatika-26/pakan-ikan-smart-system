@@ -585,6 +585,7 @@ export default function App() {
                     justifyContent: 'center',
                     padding: '0',
                     height: '24px',
+                    width: '24px'
                   }}
                 >
                   {showRPass2 ? (
