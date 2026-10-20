@@ -487,7 +487,7 @@ export default function App() {
                 <input 
                   style={{ 
                     width: '100%', 
-                    padding: '12px 45px 12px 15px', 
+                    padding: '12px 48px 12px 15px', //pergantian 
                     boxSizing: 'border-box',
                     backgroundColor: '#162238',
                     border: '1px solid #2a3b5c',
@@ -506,7 +506,7 @@ export default function App() {
                   onClick={() => setShowRPass(!showRPass)}
                   style={{
                     position: 'absolute',
-                    right: '12px',
+                    right: '10px', // Posisi ikon mata geser pojok kanan 
                     top: '50%',
                     transform: 'translateY(-50%)',
                     background: 'none',
@@ -542,7 +542,7 @@ export default function App() {
                 <input 
                   style={{ 
                     width: '100%', 
-                    padding: '12px 45px 12px 15px', 
+                    padding: '12px 48px 12px 15px', // pergantian
                     boxSizing: 'border-box',
                     backgroundColor: '#162238',
                     border: '1px solid #2a3b5c',
@@ -561,7 +561,7 @@ export default function App() {
                   onClick={() => setShowRPass2(!showRPass2)}
                   style={{
                     position: 'absolute',
-                    right: '12px',
+                    right: '10px',// posisi ikon mata 
                     top: '50%',
                     transform: 'translateY(-50%)',
                     background: 'none',
@@ -613,7 +613,7 @@ export default function App() {
                     style={{ 
                       ...styles.authInput, 
                       width: '100%', 
-                      paddingRight: '45px', 
+                      paddingRight: '48px', // ganti 
                       boxSizing: 'border-box' 
                     }} 
                     type={showLPass ? 'text' : 'password'} 
@@ -626,7 +626,7 @@ export default function App() {
                     onClick={() => setShowLPass(!showLPass)}
                     style={{
                       position: 'absolute',
-                      right: '12px',
+                      right: '10px',// possi ikon mata
                       top: '50%',
                       transform: 'translateY(-50%)',
                       background: 'none',
