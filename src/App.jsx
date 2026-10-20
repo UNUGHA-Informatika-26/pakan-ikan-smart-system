@@ -486,40 +486,46 @@ export default function App() {
               <div style={{ position: 'relative', width: '100%', display: 'block' }}>
                 <input 
                   style={{ 
-                    width: '100%', 
-                    padding: '12px 45px 12px 15px !important',  
-                    boxSizing: 'border-box',
-                    backgroundColor: '#162238',
-                    border: '1px solid #2a3b5c',
-                    borderRadius: '8px',
-                    color: '#fff',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }} 
-                  type={showRPass ? 'text' : 'password'} 
-                  placeholder="Min. 8 karakter" 
-                  value={rPass} 
-                  onChange={e => setRPass(e.target.value)} 
-                />
-                <button 
-                  type="button" 
-                  onClick={() => setShowRPass(!showRPass)}
-                  style={{
-                    position: 'absolute',
-                    right: '20px !important', // Posisi ikon mata geser pojok kanan 
-                    left: 'auto !important',  // Mencegah left menimpa posisi right
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#8d9bb8',
-                    zIndex: 5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '4px'
-                  }}
+                  width: '100%', 
+                  height: '45px', // Menjaga tinggi input agar tidak ciut/gepeng
+                  paddingTop: '10px',
+                  paddingBottom: '10px',
+                  paddingLeft: '15px',
+                  paddingRight: '45px', // Jarak aman di kanan agar teks tidak menabrak mata
+                  boxSizing: 'border-box',
+                  backgroundColor: '#162238',
+                  border: '1px solid #2a3b5c',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  fontSize: '14px',
+                  outline: 'none'
+                }} 
+                type={showRPass ? 'text' : 'password'} 
+                placeholder="Min. 8 karakter" 
+                value={rPass} 
+                onChange={e => setRPass(e.target.value)} 
+              />
+              
+              <button 
+                type="button" 
+                onClick={() => setShowRPass(!showRPass)}
+                style={{
+                  position: 'absolute',
+                  right: '12px', // Mengunci posisi ikon di pojok kanan
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#8d9bb8',
+                  zIndex: 10,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0',
+                  height: '24px',
+                  width: '24px'
+                }}
                 >
                   {showRPass ? (
                     <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
