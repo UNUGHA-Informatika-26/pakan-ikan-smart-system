@@ -339,57 +339,47 @@ export default function App() {
             </section>
           )}
 
-         {/* ========================================== */}
-      {/* 2. TAMPILAN PENGATURAN PAKAN              */}
-      {/* ========================================== */}
-      {activePage === 'pengaturan' && (
-        <div style={{ width: '100%' }}>
-          <button style={backButtonStyle} onClick={() => setActivePage('beranda')}>
-            ← Kembali ke Menu
-          </button>
-          
-          <div style={{ backgroundColor: '#1e293b', textAlign: 'center' }}>
-            <h3 style={{ color: '#38bdf8', marginTop: '0', marginBottom: '20px' }}>Pengaturan Jadwal Pakan</h3>
-            
-            {/* Rentang Tanggal */}
-            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>RENTANG TANGGAL</label>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <input type="number" style={inputStyle} value={data.tglMulai} onChange={(e) => setData({...data, tglMulai: e.target.value})} />
-                <input type="number" style={inputStyle} value={data.tglSelesai} onChange={(e) => setData({...data, tglSelesai: e.target.value})} />
+          {/* 3. PENGATURAN PAKAN */}
+          {currentScreen === 'pakan' && (
+            <section className="screen" style={styles.screen}>
+              <button style={styles.backBtn} onClick={() => setCurrentScreen('menu')} type="button">← Kembali ke Menu</button>
+              <h2 style={styles.title}>Pengaturan Jadwal Pakan</h2>
+              
+              <div>
+                <label style={styles.cap}>Rentang Tanggal</label>
+                <div style={styles.row2}>
+                  <input style={styles.input} type="number" min="1" max="31" value={tglA} onChange={e=>setTglA(parseInt(e.target.value)||1)} />
+                  <input style={styles.input} type="number" min="1" max="31" value={tglB} onChange={e=>setTglB(parseInt(e.target.value)||30)} />
+                </div>
               </div>
-            </div>
 
-            {/* Jadwal Pagi */}
-            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>JADWAL PAGI</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <input type="number" style={inputStyle} value={data.jamPagi} onChange={(e) => setData({...data, jamPagi: e.target.value})} />
-                <span>:</span>
-                <input type="number" style={inputStyle} value={data.menitPagi} onChange={(e) => setData({...data, menitPagi: e.target.value})} />
+              <div>
+                <label style={styles.cap}>Jadwal Pagi</label>
+                <div style={styles.rowTime}>
+                  <input style={styles.input} type="number" min="0" max="23" value={pagiH} onChange={e=>setPagiH(parseInt(e.target.value)||0)} />
+                  <span>:</span>
+                  <input style={styles.input} type="number" min="0" max="59" value={pagiM} onChange={e=>setPagiM(parseInt(e.target.value)||0)} />
+                </div>
               </div>
-            </div>
 
-            {/* Jadwal Sore */}
-            <div style={{ marginBottom: '20px', textAlign: 'left' }}>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>JADWAL SORE</label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <input type="number" style={inputStyle} value={data.jamSore} onChange={(e) => setData({...data, jamSore: e.target.value})} />
-                <span>:</span>
-                <input type="number" style={inputStyle} value={data.menitSore} onChange={(e) => setData({...data, menitSore: e.target.value})} />
+              <div>
+                <label style={styles.cap}>Jadwal Sore</label>
+                <div style={styles.rowTime}>
+                  <input style={styles.input} type="number" min="0" max="23" value={soreH} onChange={e=>setSoreH(parseInt(e.target.value)||0)} />
+                  <span>:</span>
+                  <input style={styles.input} type="number" min="0" max="59" value={soreM} onChange={e=>setSoreM(parseInt(e.target.value)||0)} />
+                </div>
               </div>
-            </div>
 
-            {/* Durasi */}
-            <div style={{ marginBottom: '25px', textAlign: 'left' }}>
-              <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>DURASI (DETIK)</label>
-              <input type="number" style={inputStyle} value={data.durasi} onChange={(e) => setData({...data, durasi: e.target.value})} />
-            </div>
+              <div>
+                <label style={styles.cap}>Durasi (Detik)</label>
+                <input style={styles.input} type="number" min="1" max="120" value={durasi} onChange={e=>setDurasi(parseInt(e.target.value)||1)} />
+              </div>
 
-            <button style={buttonStyle} onClick={handleUpdate}>PERBARUI DATA & AKTIFKAN</button>
-          </div>
-        </div>
-      )}
+              <button style={styles.btnPrimary} onClick={handleSavePakan} type="button">PERBARUI DATA &amp; AKTIFKAN</button>
+              <p style={styles.hint}>{pakanInfo}</p>
+            </section>
+          )}
 
           {/* 4. JURNAL HARIAN */}
           {currentScreen === 'harian' && (
@@ -595,7 +585,7 @@ export default function App() {
                     justifyContent: 'center',
                     padding: '0',
                     height: '24px',
-                    width: '24px'
+                    
                   }}
                 >
                   {showRPass2 ? (
