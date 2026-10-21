@@ -542,37 +542,41 @@ export default function App() {
               </div>
             </div>
 
-           {/* Konfirmasi Kata Sandi dengan Ikon Mata 2D di Pojok Kanan */}
-            <div style={styles.field}>
-              <label>Konfirmasi Kata Sandi</label>
-              <div style={{ position: 'relative', width: '100%', display: 'block' }}>
+           {/* Konfirmasi Kata Sandi dengan Ikon Mata */}
+            <div style={{ ...styles.field, width: '100%', marginBottom: '16px' }}>
+              <label style={{ display: 'block', marginBottom: '8px', color: '#fff', fontSize: '14px' }}>
+                Konfirmasi Kata Sandi
+              </label>
+              
+              <div style={{ position: 'relative', width: '100%', display: 'flex', alignItems: 'center' }}>
                 <input 
                   style={{ 
-                  width: '100%', 
-                  height: '45px', // Menjaga tinggi input agar tidak ciut/gepeng
-                  paddingTop: '10px',
-                  paddingBottom: '10px',
-                  paddingLeft: '15px',
-                  paddingRight: '45px', // Jarak aman di kanan agar teks tidak menabrak mata
-                  boxSizing: 'border-box',
-                  backgroundColor: '#162238',
-                  border: '1px solid #2a3b5c',
-                  borderRadius: '8px',
-                  color: '#fff',
-                  fontSize: '14px',
-                  outline: 'none'
+                    width: '100%', 
+                    height: '45px', 
+                    paddingTop: '10px',
+                    paddingBottom: '10px',
+                    paddingLeft: '15px',
+                    paddingRight: '45px', // Jarak aman di kanan agar teks tidak menabrak ikon mata
+                    boxSizing: 'border-box',
+                    backgroundColor: '#162238',
+                    border: '1px solid #2a3b5c',
+                    borderRadius: '8px',
+                    color: '#fff',
+                    fontSize: '14px',
+                    outline: 'none'
                   }} 
                   type={showRPass2 ? 'text' : 'password'} 
                   placeholder="Ulangi Kata Sandi" 
                   value={rPass2} 
                   onChange={e => setRPass2(e.target.value)} 
                 />
+                
                 <button 
                   type="button" 
                   onClick={() => setShowRPass2(!showRPass2)}
                   style={{
                     position: 'absolute',
-                    right: '12px', // Mengunci posisi ikon di pojok kanan
+                    right: '12px', 
                     top: '50%',
                     transform: 'translateY(-50%)',
                     background: 'transparent',
@@ -585,7 +589,7 @@ export default function App() {
                     justifyContent: 'center',
                     padding: '0',
                     height: '24px',
-                    
+                    width: '24px'
                   }}
                 >
                   {showRPass2 ? (
@@ -603,12 +607,12 @@ export default function App() {
               </div>
             </div>
 
-              {regErr && <p style={styles.err}>{regErr}</p>}
-              <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
+            {regErr && <p style={styles.err}>{regErr}</p>}
+            <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
             </form>
             <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
-          </section>
-        )}
+            </section>
+            )}
 
           {/* 9. MASUK */}
         {currentScreen === 'masuk' && (
