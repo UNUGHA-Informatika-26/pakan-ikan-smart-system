@@ -8,7 +8,7 @@
 2. Ulfiatul Ulya — 23EO10006
 3. Uswatun Hasanah — 23EO10028
 4. Hasna Kamalia Hakim — 23EO10037
-5. Nabilia Afrilia — 23EO10009
+5. Nabilia Afriliani — 23EO10009
 
 ---
 
