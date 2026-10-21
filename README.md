@@ -1,16 +1,73 @@
-# React + Vite
+# Sistem Pakan Ikan Pintar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Repositori ini berisi dokumentasi dan kode program proyek **Sistem Pakan Ikan Pintar** yang dikembangkan untuk memenuhi tugas mata kuliah **Analisis & Pengujian Sistem**.
 
-Currently, two official plugins are available:
+Proyek ini bertujuan untuk merancang dan mengembangkan sistem berbasis mikrokontroler ESP32 yang dapat menampilkan informasi waktu dan mengendalikan kipas sebagai output berdasarkan logika program yang diterapkan.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 📌 Gambaran Umum
 
-## React Compiler
+Sistem menggunakan ESP32 sebagai mikrokontroler utama yang terhubung dengan LCD 16x2 I2C untuk menampilkan informasi tanggal, bulan, tahun, dan timer. ESP32 juga mengirimkan sinyal kontrol ON/OFF untuk mengendalikan kipas sesuai dengan program yang dijalankan.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ⚙️ Komponen Sistem
 
-## Expanding the ESLint configuration
+- **ESP32** — mikrokontroler utama untuk memproses program dan mengendalikan sistem.
+- **LCD 16x2 I2C** — menampilkan informasi tanggal, waktu, dan timer.
+- **Kipas** — perangkat output yang dikendalikan melalui sinyal ON/OFF.
+- **Power Supply 5V / 3.3V** — menyediakan daya untuk komponen sistem.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🏗️ Arsitektur Sistem
+
+Alur kerja sistem secara umum:
+
+1. Power supply menyediakan daya untuk ESP32 dan kipas.
+2. ESP32 menjalankan program sesuai logika yang telah dibuat.
+3. Informasi tanggal, waktu, dan timer ditampilkan pada LCD 16x2 I2C.
+4. ESP32 mengirimkan sinyal kontrol untuk menghidupkan atau mematikan kipas.
+5. Sistem menjalankan fungsi sesuai dengan program yang diimplementasikan.
+
+## 🎯 Tujuan Proyek
+
+- Menganalisis kebutuhan sistem.
+- Merancang arsitektur perangkat keras dan perangkat lunak.
+- Mengimplementasikan sistem berbasis ESP32.
+- Melakukan pengujian terhadap fungsi dan kinerja sistem.
+- Mendokumentasikan hasil pengembangan sistem.
+
+## 🧪 Analisis dan Pengujian Sistem
+
+Pengujian sistem dapat dilakukan pada beberapa bagian berikut:
+
+- Pengujian ESP32 dalam menjalankan program.
+- Pengujian LCD dalam menampilkan informasi.
+- Pengujian timer sesuai dengan logika program.
+- Pengujian kendali ON/OFF kipas.
+- Pengujian catu daya pada komponen sistem.
+- Pengujian integrasi seluruh komponen.
+
+## 🛠️ Teknologi yang Digunakan
+
+- Mikrokontroler ESP32
+- Arduino IDE (jika digunakan dalam implementasi)
+- LCD 16x2 I2C
+- Bahasa pemrograman C/C++ (jika menggunakan Arduino IDE)
+
+## 📁 Struktur Repositori
+
+Struktur repositori mengikuti berkas yang tersedia dalam proyek, yang dapat mencakup:
+
+- Kode program sistem
+- Dokumentasi arsitektur sistem
+- Diagram dan rancangan sistem
+- Dokumen analisis kebutuhan
+- Dokumentasi pengujian
+
+## 👥 Informasi Proyek
+
+- **Nama Proyek:** Sistem Pakan Ikan Pintar
+- **Mata Kuliah:** Analisis & Pengujian Sistem
+- **Platform:** ESP32
+- **Jenis Sistem:** Sistem berbasis mikrokontroler
+
+## 📝 Catatan
+
+Fitur dan komponen yang dijelaskan dalam README ini perlu disesuaikan dengan implementasi aktual pada kode program dan perangkat keras yang digunakan.
