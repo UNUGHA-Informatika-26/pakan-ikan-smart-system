@@ -1,3 +1,5 @@
+kodingan fix 
+
 import React, { useState } from 'react';
 import './App.css'; // Opsional, styling utama sudah di-handle via CSS inline / global di bawah
 
@@ -133,39 +135,17 @@ export default function App() {
   const handleRegister = (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     if (!rNama) { setRegErr('Isi nama lengkap Anda.'); return; }
     if (!emailRegex.test(rMail)) { setRegErr('Alamat email belum benar.'); return; }
     if (rPass.length < 8) { setRegErr('Kata sandi minimal 8 karakter.'); return; }
     if (rPass !== rPass2) { setRegErr('Konfirmasi kata sandi tidak sama.'); return; }
-    if (!farmName) { setRegErr('Isi nama pertanian / usaha Anda.'); return; }
 
-    // 2. Simpan Data Pengguna (Termasuk Pertanian & Daftar Alat)
-    const userData = { 
-      name: rNama, 
-      email: rMail.toLowerCase(), 
-      phone: rHp, 
-      pass: rPass,
-      farmName: farmName,
-      deviceCount: deviceCount,
-      deviceNames: deviceNames 
-    };
-
+    const userData = { name: rNama, email: rMail.toLowerCase(), phone: rHp, pass: rPass };
     setRegisteredUsers({ ...registeredUsers, [rMail.toLowerCase()]: userData });
-
-    // 3. Reset Error & Arahkan ke Layar Masuk
-    setRegErr('');
-    setCurrentScreen('masuk'); // <-- Mengarahkan ke menu 'masuk' agar tidak layar kosong
-
-    // 4. Tampilkan Notifikasi Toast
-    if (typeof triggerToast === 'function') {
-      triggerToast('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
-    } else {
-      setToastMessage('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    }
-    }; 
+    setUser({ name: rNama, email: rMail.toLowerCase(), phone: rHp });
+    setCurrentScreen('menu');
+    triggerToast(`Pendaftaran berhasil, selamat datang ${rNama.split(' ')[0]}`);
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -484,61 +464,24 @@ export default function App() {
 
           {/* 7. SELAMAT DATANG (WELCOME) */}
           {currentScreen === 'welcome' && (
-        <section className="screen auth-screen center" style={{ ...styles.screen, textAlign: 'center', justifyContent: 'center', minHeight: '420px' }}>
-          {/* Logo Ikan */}
-          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-            <img 
-              src="/logo-baru.jpg" 
-              alt="Logo Smart Pakan Ikan" 
-              style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
-            />
-            <h1 style={styles.authName}>PAKAN IKAN CERDAS</h1>
-            <p style={styles.tagline}>Kelola Pakan Ikanmu Dengan Cerdas!</p>
-          </div>
-
-          <button style={{ ...styles.pillBtn, width: '100%', marginBottom: '15px' }} onClick={() => setCurrentScreen('daftar')} type="button">
-            Daftar
-          </button>
-          <p style={styles.alt}>
-            Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button>
-          </p>
-        </section>
-      )}
+            <section className="screen auth-screen center" style={{...styles.screen, textAlign:'center', justifyContent:'center', minHeight:'420px'}}>
+              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
+              <p style={styles.tagline}>Kelola Pakan Ikanmu Dengan Cerdas!</p>
+              <button style={styles.pillBtn} onClick={() => setCurrentScreen('daftar')} type="button">Daftar</button>
+              <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
+            </section>
+          )}
 
           {/* 8. DAFTAR */}
         {currentScreen === 'daftar' && (
-        <section className="screen auth-screen" style={styles.screen}>
-          {/* Logo Ikan */}
-          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-            <img 
-              src="/logo-baru.jpg" 
-              alt="Logo Smart Pakan Ikan" 
-              style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
-            />
+          <section className="screen auth-screen" style={styles.screen}>
             <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
             <p style={styles.authLead}>Silakan isi data untuk mendaftar:</p>
-          </div>
-
-          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-
-            {/* 1. Nama Lengkap */}
-            <div style={styles.field}>
-              <label>Nama Lengkap</label>
-              <input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rName} onChange={e=>getRName(e.target.value)} />
-            </div>
-
-            {/* 2. E-mail */}
-            <div style={styles.field}>
-              <label>E-mail</label>
-              <input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} />
-            </div>
-
-            {/* 3. Nomor Telepon */}
-            <div style={styles.field}>
-              <label>Nomor Telepon</label>
-              <input style={styles.authInput} type="text" placeholder="0812..." value={rPhone} onChange={e=>setRPhone(e.target.value)} />
-            </div>
-
+            <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+              <div style={styles.field}><label>Nama Lengkap</label><input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rNama} onChange={e=>setRNama(e.target.value)} /></div>
+              <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} /></div>
+              <div style={styles.field}><label>Nomor Telepon</label><input style={styles.authInput} type="tel" placeholder="0812..." value={rHp} onChange={e=>setRHp(e.target.value)} /></div>
+              
               {/* Buat Kata Sandi dengan Ikon Mata */}
               <div style={styles.field}>
               <label>Buat Kata Sandi</label>
@@ -666,81 +609,21 @@ export default function App() {
               </div>
             </div>
 
-      {/* Nama Pertanian */}
-      <div style={styles.field}>
-        <label>Nama Pertanian / Usaha</label>
-        <input 
-          style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
-          type="text" 
-          placeholder="Contoh: Agro Mandiri" 
-          value={farmName} 
-          onChange={e => setFarmName(e.target.value)} 
-        />
-      </div>
-
-      {/* Jumlah Alat yang Dipakai */}
-      <div style={styles.field}>
-        <label>Jumlah Alat yang Dipakai</label>
-        <input 
-          style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
-          type="number" 
-          min="1" 
-          max="10" 
-          value={deviceCount} 
-          onChange={handleDeviceCountChange} 
-        />
-      </div>
-
-      {/* Kolom Dinamis Nama Alat Sesuai Jumlah */}
-      {deviceNames.map((name, index) => (
-        <div key={index} style={styles.field}>
-          <label>Nama Alat ke-{index + 1}</label>
-          <input 
-            style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
-            type="text" 
-            placeholder={`Contoh: Kolam Utama ${index + 1}`} 
-            value={name} 
-            onChange={e => {
-              const updatedNames = [...deviceNames];
-              updatedNames[index] = e.target.value;
-              setDeviceNames(updatedNames);
-            }} 
-          />
-        </div>
-      ))}
-
             {regErr && <p style={styles.err}>{regErr}</p>}
-            <button style={{ ...styles.pillBtn, width: '100%', marginTop: '10px' }} type="submit">
-              Daftar Sekarang
-            </button>
-          </form>
-
-          <p style={{ ...styles.alt, marginTop: '20px' }}>
-            Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button>
-          </p>
-        </section>
-      )}
+            <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
+            </form>
+            <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
+            </section>
+            )}
 
           {/* 9. MASUK */}
         {currentScreen === 'masuk' && (
-        <section className="screen auth-screen" style={styles.screen}>
-          {/* Logo Ikan */}
-          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-            <img 
-              src="/logo-baru.jpg" 
-              alt="Logo Smart Pakan Ikan" 
-              style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
-            />
+          <section className="screen auth-screen" style={styles.screen}>
             <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
             <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
-          </div>
-
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <div style={styles.field}>
-              <label>Email</label>
-              <input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e => setLMail(e.target.value)} />
-            </div>
-
+            <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+              <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} /></div>
+              
               {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
               <div style={styles.field}>
                 <label>Kata Sandi</label>
@@ -801,6 +684,8 @@ export default function App() {
         )}
 
         </div>
+
+    
       </main>
 
       {/* Toast Notification */}
