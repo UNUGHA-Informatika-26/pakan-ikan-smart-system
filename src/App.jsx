@@ -4,7 +4,9 @@ import './App.css'; // Opsional, styling utama sudah di-handle via CSS inline / 
 
 export default function App() {
   // State Navigasi & Akun
-  const [currentScreen, setCurrentScreen] = useState('welcome');
+  const [currentScreen, setCurrentScreen] = useState(() => {
+    return localStorage.getItem('app_screen') || 'welcome';
+  });
   const [user, setUser] = useState({ name: 'Ahmad Fauzi', email: 'ahmad.fauzi@email.com', phone: '' });
   const [registeredUsers, setRegisteredUsers] = useState({});
   const [toastMessage, setToastMessage] = useState('');
