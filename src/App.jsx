@@ -362,7 +362,7 @@ return (
           {/* ========================================== */}
           {/* 4. DASHBOARD UTAMA & MENU APLIKASI         */}
           {/* ========================================== */}
-          
+
           {currentScreen === 'beranda_app' && (
             <div>
               {activePage === 'beranda' && (
@@ -593,10 +593,14 @@ return (
             <button style={{ ...buttonStyle, backgroundColor: '#38bdf8', color: '#0f172a' }} onClick={handleUpdateWifi}>
               📡 SINKRONISASI WI-FI KE ALAT
             </button>
-          </div>
-        </div>
-      )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
+        </div>
+      </main>
     </div>
   );
 }
