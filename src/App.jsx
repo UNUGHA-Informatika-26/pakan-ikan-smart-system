@@ -476,10 +476,25 @@ export default function App() {
             <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
             <p style={styles.authLead}>Silakan isi data untuk mendaftar:</p>
             <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-              <div style={styles.field}><label>Nama Lengkap</label><input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rNama} onChange={e=>setRNama(e.target.value)} /></div>
-              <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} /></div>
-              <div style={styles.field}><label>Nomor Telepon</label><input style={styles.authInput} type="tel" placeholder="0812..." value={rHp} onChange={e=>setRHp(e.target.value)} /></div>
-              
+
+            {/* 1. Nama Lengkap */}
+            <div style={styles.field}>
+              <label>Nama Lengkap</label>
+              <input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rName} onChange={e=>getRName(e.target.value)} />
+            </div>
+
+            {/* 2. E-mail */}
+            <div style={styles.field}>
+              <label>E-mail</label>
+              <input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} />
+            </div>
+
+            {/* 3. Nomor Telepon */}
+            <div style={styles.field}>
+              <label>Nomor Telepon</label>
+              <input style={styles.authInput} type="text" placeholder="0812..." value={rPhone} onChange={e=>setRPhone(e.target.value)} />
+            </div>
+
               {/* Buat Kata Sandi dengan Ikon Mata */}
               <div style={styles.field}>
               <label>Buat Kata Sandi</label>
@@ -606,6 +621,49 @@ export default function App() {
                 </button>
               </div>
             </div>
+
+      {/* Nama Pertanian */}
+      <div style={styles.field}>
+        <label>Nama Pertanian / Usaha</label>
+        <input 
+          style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
+          type="text" 
+          placeholder="Contoh: Agro Mandiri" 
+          value={farmName} 
+          onChange={e => setFarmName(e.target.value)} 
+        />
+      </div>
+
+      {/* Jumlah Alat yang Dipakai */}
+      <div style={styles.field}>
+        <label>Jumlah Alat yang Dipakai</label>
+        <input 
+          style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
+          type="number" 
+          min="1" 
+          max="10" 
+          value={deviceCount} 
+          onChange={handleDeviceCountChange} 
+        />
+      </div>
+
+      {/* Kolom Dinamis Nama Alat Sesuai Jumlah */}
+      {deviceNames.map((name, index) => (
+        <div key={index} style={styles.field}>
+          <label>Nama Alat ke-{index + 1}</label>
+          <input 
+            style={{ ...styles.authInput, width: '100%', boxSizing: 'border-box' }} 
+            type="text" 
+            placeholder={`Contoh: Kolam Utama ${index + 1}`} 
+            value={name} 
+            onChange={e => {
+              const updatedNames = [...deviceNames];
+              updatedNames[index] = e.target.value;
+              setDeviceNames(updatedNames);
+            }} 
+          />
+        </div>
+      ))}
 
             {regErr && <p style={styles.err}>{regErr}</p>}
             <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
