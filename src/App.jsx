@@ -6,10 +6,37 @@ const supabase = createClient('https://tqfspwtaexpxlmflaskd.supabase.co', 'sb_pu
 
 function App() {
 // --- STATE MANAGEMENT ---
+  // Menggunakan localStorage agar posisi halaman/auth tidak hilang saat refresh
+  const [currentScreen, setCurrentScreen] = useState(() => {
+    try {
+      return localStorage.getItem('app_screen') || 'welcome';
+    } catch (e) {
+      return 'welcome';
+    }
+  });
+
+// --- STATE MANAGEMENT ---
   const [activePage, setActivePage] = useState('beranda');
   const [loading, setLoading] = useState(true);
   const [inputTeks, setInputTeks] = useState("");
   
+  // State untuk form Pendaftaran (Daftar)
+  const [rNama, setRNama] = useState("");
+  const [rMail, setRMail] = useState("");
+  const [rHp, setRHp] = useState("");
+  const [rPass, setRPass] = useState("");
+  const [rPass2, setRPass2] = useState("");
+  const [showRPass, setShowRPass] = useState(false);
+  const [showRPass2, setShowRPass2] = useState(false);
+  const [regErr, setRegErr] = useState("");
+
+  // State untuk form Masuk (Login)
+  const [lMail, setLMail] = useState("");
+  const [lPass, setLPass] = useState("");
+  const [showLPass, setShowLPass] = useState(false);
+  const [loginErr, setLoginErr] = useState("");
+
+  // Data Jadwal Pakan
   const [data, setData] = useState({
     tglMulai: 1, tglSelesai: 30,
     jamPagi: 8, menitPagi: 0,
@@ -164,24 +191,184 @@ function App() {
   const menuCardStyle = { padding: '20px', backgroundColor: '#334155', borderRadius: '15px', cursor: 'pointer', textAlign: 'center', transition: '0.3s' };
   const backButtonStyle = { ...buttonStyle, backgroundColor: '#475569', marginBottom: '20px' };
 
+  // Style Tambahan untuk Auth (Pendaftaran & Masuk)
+  const styles = {
+    screen: { display: 'flex', flexDirection: 'column', width: '100%' },
+    authName: { fontSize: '24px', fontWeight: 'bold', color: '#10b981', textAlign: 'center', marginBottom: '8px' },
+    authLead: { fontSize: '0.9rem', color: '#94a3b8', textAlign: 'center', marginBottom: '20px' },
+    tagline: { fontSize: '0.95rem', color: '#94a3b8', marginBottom: '25px' },
+    field: { marginBottom: '15px', textAlign: 'left' },
+    authInput: { width: '100%', height: '45px', padding: '10px 15px', boxSizing: 'border-box', backgroundColor: '#162238', border: '1px solid #2a3b5c', borderRadius: '8px', color: '#fff', fontSize: '14px', outline: 'none' },
+    pillBtn: { width: '100%', padding: '14px', backgroundColor: '#10b981', color: 'white', border: 'none', borderRadius: '10px', fontSize: '1rem', fontWeight: 'bold', cursor: 'pointer' },
+    alt: { textAlign: 'center', fontSize: '0.85rem', color: '#94a3b8', marginTop: '15px' },
+    linkBtn: { background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold', padding: 0, fontSize: 'inherit' },
+    err: { color: '#ef4444', fontSize: '0.85rem', margin: '5px 0', textAlign: 'center' }
+  };
+
   if (loading) return <div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Memuat...</div>;  
 
 
 return (
     <div style={containerStyle}>
-      
-      {/* HEADER UTAMA */}
+
+     {/* HEADER UTAMA */}
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h2 style={{ margin: '0', color: '#10b981' }}>🌱 SMART FARMING</h2>
         <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '5px 0 0 0' }}>KSTM AL IHYA</p>
       </div>
 
-      {/* ========================================== */}
-      {/* 1. TAMPILAN BERANDA                        */}
-      {/* ========================================== */}
-      {activePage === 'beranda' && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <main>
+        <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+
+          {/* ========================================== */}
+          {/* 1. SELAMAT DATANG (WELCOME)                */}
+          {/* ========================================== */}
+          {currentScreen === 'welcome' && (
+            <section className="screen auth-screen center" style={{...styles.screen, textAlign:'center', justifyContent:'center', minHeight:'320px'}}>
+              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
+              <p style={styles.tagline}>Kelola Pakan Ikanmu Dengan Cerdas!</p>
+              <button style={styles.pillBtn} onClick={() => changeScreen('daftar')} type="button">Daftar</button>
+              <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => changeScreen('masuk')} type="button">Masuk di sini</button></p>
+            </section>
+          )}
+
+          {/* ========================================== */}
+          {/* 2. DAFTAR (REGISTRASI)                     */}
+          {/* ========================================== */}
+          {currentScreen === 'daftar' && (
+            <section className="screen auth-screen" style={styles.screen}>
+              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
+              <p style={styles.authLead}>Silakan isi data untuk mendaftar:</p>
+              <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Nama Lengkap</label>
+                  <input style={styles.authInput} type="text" placeholder="Masukkan Nama" value={rNama} onChange={e=>setRNama(e.target.value)} />
+                </div>
+                
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Email</label>
+                  <input style={styles.authInput} type="email" placeholder="nama@email.com" value={rMail} onChange={e=>setRMail(e.target.value)} />
+                </div>
+                
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Nomor Telepon</label>
+                  <input style={styles.authInput} type="tel" placeholder="0812..." value={rHp} onChange={e=>setRHp(e.target.value)} />
+                </div>
+                
+                {/* Buat Kata Sandi dengan Ikon Mata */}
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Buat Kata Sandi</label>
+                  <div style={{ position: 'relative', width: '100%', display: 'block' }}>
+                    <input 
+                      style={{ ...styles.authInput, paddingRight: '45px' }} 
+                      type={showRPass ? 'text' : 'password'} 
+                      placeholder="Min. 8 karakter" 
+                      value={rPass} 
+                      onChange={e => setRPass(e.target.value)} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowRPass(!showRPass)}
+                      style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#8d9bb8', height: '24px', width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      {showRPass ? (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Konfirmasi Kata Sandi dengan Ikon Mata */}
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Konfirmasi Kata Sandi</label>
+                  <div style={{ position: 'relative', width: '100%', display: 'block' }}>
+                    <input 
+                      style={{ ...styles.authInput, paddingRight: '45px' }} 
+                      type={showRPass2 ? 'text' : 'password'} 
+                      placeholder="Ulangi Kata Sandi" 
+                      value={rPass2} 
+                      onChange={e => setRPass2(e.target.value)} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowRPass2(!showRPass2)}
+                      style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#8d9bb8', height: '24px', width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      {showRPass2 ? (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {regErr && <p style={styles.err}>{regErr}</p>}
+                <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
+              </form>
+              <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => changeScreen('masuk')} type="button">Masuk di sini</button></p>
+            </section>
+          )}
+
+          {/* ========================================== */}
+          {/* 3. MASUK (LOGIN)                           */}
+          {/* ========================================== */}
+          {currentScreen === 'masuk' && (
+            <section className="screen auth-screen" style={styles.screen}>
+              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
+              <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
+              <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+                
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Email</label>
+                  <input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} />
+                </div>
+                
+                {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
+                <div style={styles.field}>
+                  <label style={{display:'block', marginBottom:'6px', fontSize:'0.8rem', color:'#94a3b8', fontWeight:'bold'}}>Kata Sandi</label>
+                  <div style={{ position: 'relative', width: '100%', display: 'block' }}>
+                    <input 
+                      style={{ ...styles.authInput, paddingRight: '45px' }} 
+                      type={showLPass ? 'text' : 'password'} 
+                      placeholder="Min. 8 karakter" 
+                      value={lPass} 
+                      onChange={e => setLPass(e.target.value)} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => setShowLPass(!showLPass)}
+                      style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'transparent', border: 'none', cursor: 'pointer', color: '#8d9bb8', height: '24px', width: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      {showLPass ? (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {loginErr && <p style={styles.err}>{loginErr}</p>}
+                <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Masuk</button>
+              </form>
+              <p style={{...styles.alt, marginTop:'20px'}}>Belum punya akun? <button style={styles.linkBtn} onClick={() => changeScreen('daftar')} type="button">Daftar di sini</button></p>
+            </section>
+          )} 
+      
+          {/* ========================================== */}
+          {/* 4. DASHBOARD UTAMA & MENU APLIKASI         */}
+          {/* ========================================== */}
           
+          {currentScreen === 'beranda_app' && (
+            <div>
+              {activePage === 'beranda' && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+
           {/* Menu Pengaturan Pakan */}
           <div style={menuCardStyle} onClick={() => setActivePage('pengaturan')}>
             <div style={{ fontSize: '30px', marginBottom: '5px' }}>🐟</div>
