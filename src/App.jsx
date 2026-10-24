@@ -1,4 +1,3 @@
-kodingan fix 
 
 import React, { useState } from 'react';
 import './App.css'; // Opsional, styling utama sudah di-handle via CSS inline / global di bawah
