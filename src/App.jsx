@@ -133,17 +133,39 @@ export default function App() {
   const handleRegister = (e) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!rNama) { setRegErr('Isi nama lengkap Anda.'); return; }
     if (!emailRegex.test(rMail)) { setRegErr('Alamat email belum benar.'); return; }
     if (rPass.length < 8) { setRegErr('Kata sandi minimal 8 karakter.'); return; }
     if (rPass !== rPass2) { setRegErr('Konfirmasi kata sandi tidak sama.'); return; }
+    if (!farmName) { setRegErr('Isi nama pertanian / usaha Anda.'); return; }
 
-    const userData = { name: rNama, email: rMail.toLowerCase(), phone: rHp, pass: rPass };
+    // 2. Simpan Data Pengguna (Termasuk Pertanian & Daftar Alat)
+    const userData = { 
+      name: rNama, 
+      email: rMail.toLowerCase(), 
+      phone: rHp, 
+      pass: rPass,
+      farmName: farmName,
+      deviceCount: deviceCount,
+      deviceNames: deviceNames 
+    };
+
     setRegisteredUsers({ ...registeredUsers, [rMail.toLowerCase()]: userData });
-    setUser({ name: rNama, email: rMail.toLowerCase(), phone: rHp });
-    setCurrentScreen('menu');
-    triggerToast(`Pendaftaran berhasil, selamat datang ${rNama.split(' ')[0]}`);
-  };
+
+    // 3. Reset Error & Arahkan ke Layar Masuk
+    setRegErr('');
+    setCurrentScreen('masuk'); // <-- Mengarahkan ke menu 'masuk' agar tidak layar kosong
+
+    // 4. Tampilkan Notifikasi Toast
+    if (typeof triggerToast === 'function') {
+      triggerToast('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
+    } else {
+      setToastMessage('Pendaftaran berhasil! Silakan masuk ke akun Anda.');
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }
+    }; 
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -462,20 +484,42 @@ export default function App() {
 
           {/* 7. SELAMAT DATANG (WELCOME) */}
           {currentScreen === 'welcome' && (
-            <section className="screen auth-screen center" style={{...styles.screen, textAlign:'center', justifyContent:'center', minHeight:'420px'}}>
-              <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
-              <p style={styles.tagline}>Kelola Pakan Ikanmu Dengan Cerdas!</p>
-              <button style={styles.pillBtn} onClick={() => setCurrentScreen('daftar')} type="button">Daftar</button>
-              <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
-            </section>
-          )}
+        <section className="screen auth-screen center" style={{ ...styles.screen, textAlign: 'center', justifyContent: 'center', minHeight: '420px' }}>
+          {/* Logo Ikan */}
+          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+            <img 
+              src="/logo-baru.jpg" 
+              alt="Logo Smart Pakan Ikan" 
+              style={{ width: '90px', height: '90px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
+            />
+            <h1 style={styles.authName}>PAKAN IKAN CERDAS</h1>
+            <p style={styles.tagline}>Kelola Pakan Ikanmu Dengan Cerdas!</p>
+          </div>
+
+          <button style={{ ...styles.pillBtn, width: '100%', marginBottom: '15px' }} onClick={() => setCurrentScreen('daftar')} type="button">
+            Daftar
+          </button>
+          <p style={styles.alt}>
+            Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button>
+          </p>
+        </section>
+      )}
 
           {/* 8. DAFTAR */}
         {currentScreen === 'daftar' && (
-          <section className="screen auth-screen" style={styles.screen}>
+        <section className="screen auth-screen" style={styles.screen}>
+          {/* Logo Ikan */}
+          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+            <img 
+              src="/logo-baru.jpg" 
+              alt="Logo Smart Pakan Ikan" 
+              style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
+            />
             <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
             <p style={styles.authLead}>Silakan isi data untuk mendaftar:</p>
-            <form onSubmit={handleRegister} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
+          </div>
+
+          <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
             {/* 1. Nama Lengkap */}
             <div style={styles.field}>
@@ -666,20 +710,37 @@ export default function App() {
       ))}
 
             {regErr && <p style={styles.err}>{regErr}</p>}
-            <button style={{...styles.pillBtn, width:'100%', marginTop:'10px'}} type="submit">Daftar Sekarang</button>
-            </form>
-            <p style={styles.alt}>Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button></p>
-            </section>
-            )}
+            <button style={{ ...styles.pillBtn, width: '100%', marginTop: '10px' }} type="submit">
+              Daftar Sekarang
+            </button>
+          </form>
+
+          <p style={{ ...styles.alt, marginTop: '20px' }}>
+            Sudah punya akun? <button style={styles.linkBtn} onClick={() => setCurrentScreen('masuk')} type="button">Masuk di sini</button>
+          </p>
+        </section>
+      )}
 
           {/* 9. MASUK */}
         {currentScreen === 'masuk' && (
-          <section className="screen auth-screen" style={styles.screen}>
+        <section className="screen auth-screen" style={styles.screen}>
+          {/* Logo Ikan */}
+          <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+            <img 
+              src="/logo-baru.jpg" 
+              alt="Logo Smart Pakan Ikan" 
+              style={{ width: '80px', height: '80px', objectFit: 'contain', borderRadius: '50%', marginBottom: '10px' }} 
+            />
             <h1 style={styles.authName}>SMART PAKAN IKAN</h1>
             <p style={styles.authLead}>Silakan masuk ke akun Anda:</p>
-            <form onSubmit={handleLogin} style={{display:'flex', flexDirection:'column', gap:'10px'}}>
-              <div style={styles.field}><label>Email</label><input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e=>setLMail(e.target.value)} /></div>
-              
+          </div>
+
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={styles.field}>
+              <label>Email</label>
+              <input style={styles.authInput} type="email" placeholder="nama@email.com" value={lMail} onChange={e => setLMail(e.target.value)} />
+            </div>
+
               {/* Kata Sandi dengan Ikon Mata di Menu Masuk */}
               <div style={styles.field}>
                 <label>Kata Sandi</label>
@@ -740,8 +801,6 @@ export default function App() {
         )}
 
         </div>
-
-    
       </main>
 
       {/* Toast Notification */}
