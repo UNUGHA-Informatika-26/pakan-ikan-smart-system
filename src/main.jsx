@@ -7,14 +7,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-)
+);
 
-// Mematikan Service Worker agar tidak terjadi bug layar blank / cache nyangkut
+// MENGAKALI CACHE: Otomatis unregister service worker lama agar tidak blank
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
     for (let registration of registrations) {
       registration.unregister();
-      console.log('Service Worker berhasil dilepas (unregister)');
     }
   });
 }
