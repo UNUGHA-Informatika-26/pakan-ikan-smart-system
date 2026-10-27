@@ -62,12 +62,15 @@ export default function Rab({ onBack }) {
   };
 
   const handleEditJurnal = (item) => {
+    // Masukkan data ke form untuk diedit
     setForm({
-      bibitQty: item.bibitQty || '', bibitHarga: item.bibitHarga || '',
-      peletQty: item.peletQty || '', peletHarga: item.peletHarga || ''
+      bibitQty: item.bibitQty || '',
+      bibitHarga: item.bibitHarga || '',
+      peletQty: item.peletQty || '',
+      peletHarga: item.peletHarga || ''
     });
     setExtraPengeluaran(item.extraPengeluaran ? [...item.extraPengeluaran] : []);
-    setEditJurnalId(item.id);
+    setEditJurnalId(item.id); // Simpan ID jurnal yang sedang diedit
     setMenuJurnalId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -91,7 +94,7 @@ export default function Rab({ onBack }) {
     const totalPengeluaran = hitungTotal(form, extraPengeluaran);
 
     if (editJurnalId !== null) {
-      // Update jurnal yang sedang diedit berdasarkan ID-nya
+      // Perbarui data jurnal yang memiliki ID sama dengan editJurnalId
       setJurnalList(jurnalList.map(j => {
         if (j.id === editJurnalId) {
           return {
@@ -140,7 +143,7 @@ export default function Rab({ onBack }) {
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
         <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
-          {editJurnalId !== null ? 'Mode Edit Jurnal RAB' : 'Masukkan rincian Bibit & Pelet (tidak wajib diisi semua)'}
+          {editJurnalId !== null ? '⚠️ Mode Edit Jurnal RAB (Silakan ubah data di atas)' : 'Masukkan rincian Bibit & Pelet (tidak wajib diisi semua)'}
         </p>
       </div>
 
