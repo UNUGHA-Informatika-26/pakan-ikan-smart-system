@@ -62,7 +62,6 @@ export default function Rab({ onBack }) {
   };
 
   const handleEditJurnal = (item) => {
-    // Masukkan data ke form untuk diedit
     setForm({
       bibitQty: item.bibitQty || '',
       bibitHarga: item.bibitHarga || '',
@@ -70,7 +69,7 @@ export default function Rab({ onBack }) {
       peletHarga: item.peletHarga || ''
     });
     setExtraPengeluaran(item.extraPengeluaran ? [...item.extraPengeluaran] : []);
-    setEditJurnalId(item.id); // Simpan ID jurnal yang sedang diedit
+    setEditJurnalId(item.id); // Simpan ID item yang sedang diedit
     setMenuJurnalId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -94,9 +93,9 @@ export default function Rab({ onBack }) {
     const totalPengeluaran = hitungTotal(form, extraPengeluaran);
 
     if (editJurnalId !== null) {
-      // Perbarui data jurnal yang memiliki ID sama dengan editJurnalId
+      // Perbarui jurnal berdasarkan pencocokan ID
       setJurnalList(jurnalList.map(j => {
-        if (j.id === editJurnalId) {
+        if (Number(j.id) === Number(editJurnalId)) {
           return {
             ...j,
             bibitQty: form.bibitQty,
