@@ -69,7 +69,7 @@ export default function Rab({ onBack }) {
 
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
-        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>Masukkan rincian pengeluaran operasional</p>
+        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>Masukkan rincian pengeluaran (tidak wajib diisi semua)</p>
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
@@ -78,8 +78,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA BIBIT IKAN</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="bibitQty" placeholder="Jumlah (Ekor)" value={form.bibitQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="bibitHarga" placeholder="Harga (Rp)" value={form.bibitHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="bibitQty" placeholder="Jumlah (Ekor)" value={form.bibitQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="bibitHarga" placeholder="Harga (Rp)" value={form.bibitHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -87,8 +87,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA ALAS KOLAM</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="alasQty" placeholder="Ukuran (Meter)" value={form.alasQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="alasHarga" placeholder="Harga (Rp)" value={form.alasHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="alasQty" placeholder="Ukuran (Meter)" value={form.alasQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="alasHarga" placeholder="Harga (Rp)" value={form.alasHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -96,8 +96,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA PELET</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="peletQty" placeholder="Berat (Gram)" value={form.peletQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="peletHarga" placeholder="Harga (Rp)" value={form.peletHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="peletQty" placeholder="Berat (Gram)" value={form.peletQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="peletHarga" placeholder="Harga (Rp)" value={form.peletHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -105,8 +105,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA KAPUR DOLOMIT</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="dolomitQty" placeholder="Berat (Gram)" value={form.dolomitQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="dolomitHarga" placeholder="Harga (Rp)" value={form.dolomitHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="dolomitQty" placeholder="Berat (Gram)" value={form.dolomitQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="dolomitHarga" placeholder="Harga (Rp)" value={form.dolomitHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -114,8 +114,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA GARAM</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="garamQty" placeholder="Berat (Gram)" value={form.garamQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="garamHarga" placeholder="Harga (Rp)" value={form.garamHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="garamQty" placeholder="Berat (Gram)" value={form.garamQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="garamHarga" placeholder="Harga (Rp)" value={form.garamHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -123,8 +123,8 @@ export default function Rab({ onBack }) {
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA VITAMIN IKAN</label>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="vitaminQty" placeholder="Jumlah" value={form.vitaminQty} onChange={handleChange} required />
-            <input type="number" className="form-input" name="vitaminHarga" placeholder="Harga (Rp)" value={form.vitaminHarga} onChange={handleChange} required />
+            <input type="number" className="form-input" name="vitaminQty" placeholder="Jumlah" value={form.vitaminQty} onChange={handleChange} />
+            <input type="number" className="form-input" name="vitaminHarga" placeholder="Harga (Rp)" value={form.vitaminHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -155,10 +155,10 @@ export default function Rab({ onBack }) {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <input type="text" className="form-input" placeholder="Nama Pengeluaran (Contoh: Obat Ikan)" value={item.nama} onChange={(e) => handleExtraChange(item.id, 'nama', e.target.value)} required />
+              <input type="text" className="form-input" placeholder="Nama Pengeluaran (Contoh: Obat Ikan)" value={item.nama} onChange={(e) => handleExtraChange(item.id, 'nama', e.target.value)} />
               <div style={{ display: 'flex', gap: '8px' }}>
-                <input type="text" className="form-input" placeholder="Jumlah & Satuan (Contoh: 2 Botol)" value={item.satuan} onChange={(e) => handleExtraChange(item.id, 'satuan', e.target.value)} required />
-                <input type="number" className="form-input" placeholder="Harga (Rp)" value={item.harga} onChange={(e) => handleExtraChange(item.id, 'harga', e.target.value)} required />
+                <input type="text" className="form-input" placeholder="Jumlah & Satuan (Contoh: 2 Botol)" value={item.satuan} onChange={(e) => handleExtraChange(item.id, 'satuan', e.target.value)} />
+                <input type="number" className="form-input" placeholder="Harga (Rp)" value={item.harga} onChange={(e) => handleExtraChange(item.id, 'harga', e.target.value)} />
               </div>
             </div>
           </div>
@@ -196,16 +196,18 @@ export default function Rab({ onBack }) {
             {jurnalList.map((item) => (
               <div key={item.id} style={{ background: '#1e293b', padding: '10px 12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
                 <div style={{ color: '#38bdf8', fontWeight: 'bold', marginBottom: '6px' }}>📅 {item.tanggal}</div>
-                <div>🐟 Bibit: {item.bibitQty} ekor (Rp {Number(item.bibitHarga).toLocaleString()})</div>
-                <div>🟦 Alas Kolam: {item.alasQty} meter (Rp {Number(item.alasHarga).toLocaleString()})</div>
-                <div>🥣 Pelet: {item.peletQty} gram (Rp {Number(item.peletHarga).toLocaleString()})</div>
-                <div>⚪ Dolomit: {item.dolomitQty} gram (Rp {Number(item.dolomitHarga).toLocaleString()})</div>
-                <div>🧂 Garam: {item.garamQty} gram (Rp {Number(item.garamHarga).toLocaleString()})</div>
-                <div>💊 Vitamin: {item.vitaminQty} (Rp {Number(item.vitaminHarga).toLocaleString()})</div>
+                {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor (Rp {Number(item.bibitHarga).toLocaleString()})</div>}
+                {item.alasHarga && <div>🟦 Alas Kolam: {item.alasQty} meter (Rp {Number(item.alasHarga).toLocaleString()})</div>}
+                {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram (Rp {Number(item.peletHarga).toLocaleString()})</div>}
+                {item.dolomitHarga && <div>⚪ Dolomit: {item.dolomitQty} gram (Rp {Number(item.dolomitHarga).toLocaleString()})</div>}
+                {item.garamHarga && <div>🧂 Garam: {item.garamQty} gram (Rp {Number(item.garamHarga).toLocaleString()})</div>}
+                {item.vitaminHarga && <div>💊 Vitamin: {item.vitaminQty} (Rp {Number(item.vitaminHarga).toLocaleString()})</div>}
                 {item.extraPengeluaran && item.extraPengeluaran.map((ex, idx) => (
-                  <div key={idx} style={{ color: '#f59e0b', marginTop: '2px' }}>
-                    📌 {ex.nama}: {ex.satuan} (Rp {Number(ex.harga).toLocaleString()})
-                  </div>
+                  ex.nama && (
+                    <div key={idx} style={{ color: '#f59e0b', marginTop: '2px' }}>
+                      📌 {ex.nama}: {ex.satuan} (Rp {Number(ex.harga).toLocaleString()})
+                    </div>
+                  )
                 ))}
               </div>
             ))}
