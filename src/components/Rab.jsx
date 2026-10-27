@@ -11,17 +11,16 @@ const formatRupiah = (angka) => {
 };
 
 export default function Rab({ onBack }) {
-  // State form utama untuk tambah data baru di atas
   const [form, setForm] = useState({ bibitQty: '', bibitHarga: '', peletQty: '', peletHarga: '' });
   const [extraPengeluaran, setExtraPengeluaran] = useState([]);
   
-  // State daftar jurnal
   const [jurnalList, setJurnalList] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
 
-  // State khusus untuk mode edit langsung di kartu (menyimpan index item yang sedang diedit & nilai sementaranya)
+  // State untuk edit langsung di kartu
   const [editingIndex, setEditingIndex] = useState(null);
   const [editForm, setEditForm] = useState({});
+  const [editExtra, setEditExtra] = useState([]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -38,7 +37,6 @@ export default function Rab({ onBack }) {
     setActiveMenuId(null);
   };
 
-  // Simpan data baru dari form atas
   const handleSubmit = (e) => {
     e.preventDefault();
     let total = Number(form.bibitHarga || 0) + Number(form.peletHarga || 0);
@@ -67,7 +65,7 @@ export default function Rab({ onBack }) {
     setActiveMenuId(null);
   };
 
-  // Mulai Edit di dalam kartu
+  // Mulai Edit (termasuk pengeluaran tambahan)
   const startEdit = (item, index) => {
     setEditingIndex(index);
     setEditForm({
@@ -76,6 +74,7 @@ export default function Rab({ onBack }) {
       peletQty: item.peletQty || '',
       peletHarga: item.peletHarga || ''
     });
+    setEditExtra(item.extraPengeluaran ? [...item.extraPengeluaran] : []);
     setActiveMenuId(null);
   };
 
@@ -83,20 +82,28 @@ export default function Rab({ onBack }) {
     setEditForm({ ...editForm, [e.target.name]: e.target.value });
   };
 
-  // Simpan Perubahan langsung dari kartu
+  const handleEditExtraChange = (id, field, value) => {
+    setEditExtra(editExtra.map(item => item.id === id ? { ...item, [field]: value } : item));
+  };
+
+  const handleAddEditExtra = () => {
+    setEditExtra([...editExtra, { id: Date.now(), nama: '', qty: '', satuan: '', harga: '' }]);
+  };
+
+  const handleRemoveEditExtra = (id) => {
+    setEditExtra(editExtra.filter(item => item.id !== id));
+  };
+
+  // Simpan Perubahan
   const saveEdit = (index) => {
     let total = Number(editForm.bibitHarga || 0) + Number(editForm.peletHarga || 0);
-    
-    // Hitung total termasuk pengeluaran tambahan jika ada
-    const currentItem = jurnalList[index];
-    if (currentItem.extraPengeluaran) {
-      currentItem.extraPengeluaran.forEach(ex => { total += Number(ex.harga || 0); });
-    }
+    editExtra.forEach(ex => { total += Number(ex.harga || 0); });
 
     const updatedList = [...jurnalList];
     updatedList[index] = {
-      ...currentItem,
+      ...updatedList[index],
       ...editForm,
+      extraPengeluaran: [...editExtra],
       total
     };
 
@@ -192,13 +199,13 @@ export default function Rab({ onBack }) {
                   )}
                 </div>
 
-                {/* Kondisi: Jika sedang mode edit di kartu ini, tampilkan form input kecil */}
+                {/* Mode Edit Lengkap di Dalam Kartu */}
                 {editingIndex === index ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#0f172a', padding: '10px', borderRadius: '6px', border: '1px solid #38bdf8' }}>
-                    <div style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem' }}>Edit Langsung:</div>
+                    <div style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem' }}>Edit Semua Data RAB:</div>
                     
                     <div>
-                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Bibit Ikan (Ekor & Harga Rp):</span>
+                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Bibit Ikan:</span>
                       <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
                         <input type="number" className="form-input" name="bibitQty" value={editForm.bibitQty} onChange={handleEditChange} placeholder="Ekor" />
                         <input type="number" className="form-input" name="bibitHarga" value={editForm.bibitHarga} onChange={handleEditChange} placeholder="Harga Rp" />
@@ -206,14 +213,37 @@ export default function Rab({ onBack }) {
                     </div>
 
                     <div>
-                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Pelet (Gram & Harga Rp):</span>
+                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Pelet:</span>
                       <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
                         <input type="number" className="form-input" name="peletQty" value={editForm.peletQty} onChange={handleEditChange} placeholder="Gram" />
                         <input type="number" className="form-input" name="peletHarga" value={editForm.peletHarga} onChange={handleEditChange} placeholder="Harga Rp" />
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                    {/* Edit Pengeluaran Tambahan */}
+                    <div style={{ marginTop: '4px' }}>
+                      <span style={{ color: '#f59e0b', fontSize: '0.65rem', fontWeight: 'bold' }}>Pengeluaran Tambahan:</span>
+                      {editExtra.map((ex, exIdx) => (
+                        <div key={ex.id} style={{ background: '#1e293b', padding: '6px', borderRadius: '6px', marginTop: '4px', border: '1px solid #334155' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '0.65rem', color: '#38bdf8' }}>Item {exIdx + 1}</span>
+                            <button type="button" onClick={() => handleRemoveEditExtra(ex.id)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.65rem', cursor: 'pointer' }}>Hapus</button>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            <input type="text" className="form-input" placeholder="Nama" value={ex.nama} onChange={(e) => handleEditExtraChange(ex.id, 'nama', e.target.value)} />
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <input type="text" className="form-input" placeholder="Satuan" value={ex.satuan} onChange={(e) => handleEditExtraChange(ex.id, 'satuan', e.target.value)} />
+                              <input type="number" className="form-input" placeholder="Harga Rp" value={ex.harga} onChange={(e) => handleEditExtraChange(ex.id, 'harga', e.target.value)} />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      <button type="button" onClick={handleAddEditExtra} style={{ background: 'none', border: 'none', color: '#38bdf8', fontSize: '0.7rem', cursor: 'pointer', marginTop: '4px' }}>
+                        + Tambah Baris Pengeluaran
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '8px' }}>
                       <button type="button" onClick={() => saveEdit(index)} style={{ flex: 1, backgroundColor: '#38bdf8', color: '#0f172a', border: 'none', padding: '6px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.75rem' }}>
                         Perbarui
                       </button>
