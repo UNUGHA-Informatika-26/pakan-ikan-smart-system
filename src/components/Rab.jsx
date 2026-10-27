@@ -19,7 +19,7 @@ const formatRupiah = (angka) => {
 };
 
 export default function Rab({ onBack }) {
-  // State form utama (hanya Bibit Ikan & Pelet)
+  // State form utama (Bibit Ikan & Pelet)
   const [form, setForm] = useState({
     bibitQty: '', bibitHarga: '',
     peletQty: '', peletHarga: ''
@@ -66,13 +66,13 @@ export default function Rab({ onBack }) {
       bibitQty: item.bibitQty || '', bibitHarga: item.bibitHarga || '',
       peletQty: item.peletQty || '', peletHarga: item.peletHarga || ''
     });
-    setExtraPengeluaran(item.extraPengeluaran || []);
+    setExtraPengeluaran(item.extraPengeluaran ? [...item.extraPengeluaran] : []);
     setEditJurnalId(item.id);
     setMenuJurnalId(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Algoritma perhitungan total pengeluaran (Bibit + Pelet + Tambahan)
+  // Algoritma perhitungan total pengeluaran
   const hitungTotal = (currentForm, currentExtra) => {
     let total = 
       Number(currentForm.bibitHarga || 0) +
@@ -90,20 +90,30 @@ export default function Rab({ onBack }) {
     e.preventDefault();
     const totalPengeluaran = hitungTotal(form, extraPengeluaran);
 
-    if (editJurnalId) {
-      setJurnalList(jurnalList.map(j => j.id === editJurnalId ? {
-        ...j,
-        ...form,
-        extraPengeluaran,
-        total: totalPengeluaran
-      } : j));
+    if (editJurnalId !== null) {
+      // Update jurnal yang sedang diedit berdasarkan ID-nya
+      setJurnalList(jurnalList.map(j => {
+        if (j.id === editJurnalId) {
+          return {
+            ...j,
+            bibitQty: form.bibitQty,
+            bibitHarga: form.bibitHarga,
+            peletQty: form.peletQty,
+            peletHarga: form.peletHarga,
+            extraPengeluaran: [...extraPengeluaran],
+            total: totalPengeluaran
+          };
+        }
+        return j;
+      }));
       setEditJurnalId(null);
       alert("Jurnal RAB Berhasil Diperbarui!");
     } else {
+      // Tambah jurnal baru
       const dataBaru = {
         id: Date.now(),
         ...form,
-        extraPengeluaran,
+        extraPengeluaran: [...extraPengeluaran],
         total: totalPengeluaran,
         tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
       };
@@ -130,7 +140,7 @@ export default function Rab({ onBack }) {
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
         <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
-          {editJurnalId ? 'Edit Jurnal RAB' : 'Masukkan rincian Bibit & Pelet (tidak wajib diisi semua)'}
+          {editJurnalId !== null ? 'Mode Edit Jurnal RAB' : 'Masukkan rincian Bibit & Pelet (tidak wajib diisi semua)'}
         </p>
       </div>
 
@@ -199,9 +209,9 @@ export default function Rab({ onBack }) {
         <button 
           type="submit" 
           className="btn-primary" 
-          style={{ backgroundColor: editJurnalId ? '#38bdf8' : '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}
+          style={{ backgroundColor: editJurnalId !== null ? '#38bdf8' : '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}
         >
-          {editJurnalId ? 'Simpan Perubahan Jurnal' : 'Simpan ke Jurnal RAB'}
+          {editJurnalId !== null ? 'Simpan Perubahan Jurnal' : 'Simpan ke Jurnal RAB'}
         </button>
       </form>
 
