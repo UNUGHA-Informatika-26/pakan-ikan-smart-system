@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-// Fungsi helper Rupiah menggunakan Intl.NumberFormat (Sangat Ringan & Native)
 const formatRupiah = (angka) => {
   if (!angka || isNaN(angka)) return 'Rp 0,00';
   return new Intl.NumberFormat('id-ID', {
@@ -12,11 +11,17 @@ const formatRupiah = (angka) => {
 };
 
 export default function Rab({ onBack }) {
+  // State form utama untuk tambah data baru di atas
   const [form, setForm] = useState({ bibitQty: '', bibitHarga: '', peletQty: '', peletHarga: '' });
   const [extraPengeluaran, setExtraPengeluaran] = useState([]);
+  
+  // State daftar jurnal
   const [jurnalList, setJurnalList] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
-  const [editIndex, setEditIndex] = useState(null);
+
+  // State khusus untuk mode edit langsung di kartu (menyimpan index item yang sedang diedit & nilai sementaranya)
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editForm, setEditForm] = useState({});
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -33,6 +38,26 @@ export default function Rab({ onBack }) {
     setActiveMenuId(null);
   };
 
+  // Simpan data baru dari form atas
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    let total = Number(form.bibitHarga || 0) + Number(form.peletHarga || 0);
+    extraPengeluaran.forEach(ex => { total += Number(ex.harga || 0); });
+
+    const dataItem = {
+      id: Date.now(),
+      tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+      ...form,
+      extraPengeluaran: [...extraPengeluaran],
+      total
+    };
+
+    setJurnalList([dataItem, ...jurnalList]);
+    setForm({ bibitQty: '', bibitHarga: '', peletQty: '', peletHarga: '' });
+    setExtraPengeluaran([]);
+    alert("Jurnal Berhasil Disimpan!");
+  };
+
   const handleHapusJurnal = (index) => {
     if (window.confirm("Hapus jurnal ini?")) {
       const list = [...jurnalList];
@@ -42,46 +67,42 @@ export default function Rab({ onBack }) {
     setActiveMenuId(null);
   };
 
-  const handleEditJurnal = (item, index) => {
-    setForm({
+  // Mulai Edit di dalam kartu
+  const startEdit = (item, index) => {
+    setEditingIndex(index);
+    setEditForm({
       bibitQty: item.bibitQty || '',
       bibitHarga: item.bibitHarga || '',
       peletQty: item.peletQty || '',
       peletHarga: item.peletHarga || ''
     });
-    setExtraPengeluaran(item.extraPengeluaran ? [...item.extraPengeluaran] : []);
-    setEditIndex(index);
     setActiveMenuId(null);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    // Algoritma total kilat
-    let total = Number(form.bibitHarga || 0) + Number(form.peletHarga || 0);
-    extraPengeluaran.forEach(ex => { total += Number(ex.harga || 0); });
+  const handleEditChange = (e) => {
+    setEditForm({ ...editForm, [e.target.name]: e.target.value });
+  };
 
-    const dataItem = {
-      id: editIndex !== null ? jurnalList[editIndex].id : Date.now(),
-      tanggal: editIndex !== null ? jurnalList[editIndex].tanggal : new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
-      ...form,
-      extraPengeluaran: [...extraPengeluaran],
+  // Simpan Perubahan langsung dari kartu
+  const saveEdit = (index) => {
+    let total = Number(editForm.bibitHarga || 0) + Number(editForm.peletHarga || 0);
+    
+    // Hitung total termasuk pengeluaran tambahan jika ada
+    const currentItem = jurnalList[index];
+    if (currentItem.extraPengeluaran) {
+      currentItem.extraPengeluaran.forEach(ex => { total += Number(ex.harga || 0); });
+    }
+
+    const updatedList = [...jurnalList];
+    updatedList[index] = {
+      ...currentItem,
+      ...editForm,
       total
     };
 
-    if (editIndex !== null) {
-      const list = [...jurnalList];
-      list[editIndex] = dataItem;
-      setJurnalList(list);
-      setEditIndex(null);
-      alert("Jurnal Diperbarui!");
-    } else {
-      setJurnalList([dataItem, ...jurnalList]);
-      alert("Jurnal Disimpan!");
-    }
-
-    setForm({ bibitQty: '', bibitHarga: '', peletQty: '', peletHarga: '' });
-    setExtraPengeluaran([]);
+    setJurnalList(updatedList);
+    setEditingIndex(null);
+    alert("Jurnal Berhasil Diperbarui!");
   };
 
   return (
@@ -92,11 +113,10 @@ export default function Rab({ onBack }) {
 
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
-        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
-          {editIndex !== null ? '⚠️ Mode Edit Jurnal' : 'Masukkan rincian pengeluaran (opsional)'}
-        </p>
+        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>Masukkan rincian pengeluaran (opsional)</p>
       </div>
 
+      {/* Form Input Utama */}
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA BIBIT IKAN</label>
@@ -118,19 +138,8 @@ export default function Rab({ onBack }) {
           <div key={item.id} style={{ position: 'relative', background: '#1e293b', padding: '10px', borderRadius: '10px', border: '1px solid #334155' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
               <label style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: 'bold' }}>PENGELUARAN TAMBAHAN {index + 1}</label>
-              
-              <div style={{ position: 'relative' }}>
-                <button type="button" onClick={() => setActiveMenuId(activeMenuId === item.id ? null : item.id)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', padding: '0 5px' }}>
-                  ⋮
-                </button>
-                {activeMenuId === item.id && (
-                  <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, boxShadow: '0 4px 10px rgba(0,0,0,0.4)' }}>
-                    <button type="button" onClick={() => handleHapusExtra(item.id)} style={{ display: 'block', width: '100%', padding: '6px 12px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
-                  </div>
-                )}
-              </div>
+              <button type="button" onClick={() => handleHapusExtra(item.id)} style={{ background: 'none', border: 'none', color: '#ef4444', fontSize: '0.75rem', cursor: 'pointer' }}>Hapus</button>
             </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <input type="text" className="form-input" placeholder="Nama Pengeluaran" value={item.nama} onChange={(e) => handleExtraChange(item.id, 'nama', e.target.value)} />
               <div style={{ display: 'flex', gap: '8px' }}>
@@ -145,11 +154,12 @@ export default function Rab({ onBack }) {
           + Tambah Pengeluaran
         </button>
 
-        <button type="submit" className="btn-primary" style={{ backgroundColor: editIndex !== null ? '#38bdf8' : '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}>
-          {editIndex !== null ? 'Simpan Perubahan Jurnal' : 'Simpan ke Jurnal RAB'}
+        <button type="submit" className="btn-primary" style={{ backgroundColor: '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}>
+          Simpan ke Jurnal RAB
         </button>
       </form>
 
+      {/* Daftar Jurnal Tersimpan */}
       <div style={{ marginTop: '25px', borderTop: '1px solid #334155', paddingTop: '15px' }}>
         <h4 style={{ color: '#38bdf8', fontSize: '0.85rem', marginBottom: '10px', textAlign: 'center' }}>Jurnal RAB Tersimpan</h4>
         
@@ -162,37 +172,75 @@ export default function Rab({ onBack }) {
             {jurnalList.map((item, index) => (
               <div key={item.id} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
                 
+                {/* Header Kartu */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <div style={{ color: '#38bdf8', fontWeight: 'bold' }}>📅 {item.tanggal}</div>
                   
-                  <div style={{ position: 'relative' }}>
-                    <button type="button" onClick={() => setActiveMenuId(activeMenuId === `jurnal-${index}` ? null : `jurnal-${index}`)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', padding: '0 5px' }}>
-                      ⋮
-                    </button>
+                  {editingIndex !== index && (
+                    <div style={{ position: 'relative' }}>
+                      <button type="button" onClick={() => setActiveMenuId(activeMenuId === index ? null : index)} style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', padding: '0 5px' }}>
+                        ⋮
+                      </button>
 
-                    {activeMenuId === `jurnal-${index}` && (
-                      <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
-                        <button type="button" onClick={() => handleEditJurnal(item, index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
-                        <button type="button" onClick={() => handleHapusJurnal(index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor ({formatRupiah(item.bibitHarga)})</div>}
-                {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram ({formatRupiah(item.peletHarga)})</div>}
-                
-                {item.extraPengeluaran && item.extraPengeluaran.map((ex, idx) => (
-                  ex.nama && (
-                    <div key={idx} style={{ color: '#f59e0b', marginTop: '2px' }}>
-                      📌 {ex.nama}: {ex.satuan} ({formatRupiah(ex.harga)})
+                      {activeMenuId === index && (
+                        <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+                          <button type="button" onClick={() => startEdit(item, index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
+                          <button type="button" onClick={() => handleHapusJurnal(index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
+                        </div>
+                      )}
                     </div>
-                  )
-                ))}
-
-                <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed #334155', color: '#10b981', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                  💰 Total Pengeluaran: {formatRupiah(item.total)}
+                  )}
                 </div>
+
+                {/* Kondisi: Jika sedang mode edit di kartu ini, tampilkan form input kecil */}
+                {editingIndex === index ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: '#0f172a', padding: '10px', borderRadius: '6px', border: '1px solid #38bdf8' }}>
+                    <div style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem' }}>Edit Langsung:</div>
+                    
+                    <div>
+                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Bibit Ikan (Ekor & Harga Rp):</span>
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                        <input type="number" className="form-input" name="bibitQty" value={editForm.bibitQty} onChange={handleEditChange} placeholder="Ekor" />
+                        <input type="number" className="form-input" name="bibitHarga" value={editForm.bibitHarga} onChange={handleEditChange} placeholder="Harga Rp" />
+                      </div>
+                    </div>
+
+                    <div>
+                      <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Pelet (Gram & Harga Rp):</span>
+                      <div style={{ display: 'flex', gap: '6px', marginTop: '2px' }}>
+                        <input type="number" className="form-input" name="peletQty" value={editForm.peletQty} onChange={handleEditChange} placeholder="Gram" />
+                        <input type="number" className="form-input" name="peletHarga" value={editForm.peletHarga} onChange={handleEditChange} placeholder="Harga Rp" />
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
+                      <button type="button" onClick={() => saveEdit(index)} style={{ flex: 1, backgroundColor: '#38bdf8', color: '#0f172a', border: 'none', padding: '6px', borderRadius: '4px', fontWeight: 'bold', cursor: 'pointer', fontSize: '0.75rem' }}>
+                        Perbarui
+                      </button>
+                      <button type="button" onClick={() => setEditingIndex(null)} style={{ background: '#334155', color: '#fff', border: 'none', padding: '6px 10px', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}>
+                        Batal
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Tampilan Normal Kartu */
+                  <>
+                    {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor ({formatRupiah(item.bibitHarga)})</div>}
+                    {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram ({formatRupiah(item.peletHarga)})</div>}
+                    
+                    {item.extraPengeluaran && item.extraPengeluaran.map((ex, idx) => (
+                      ex.nama && (
+                        <div key={idx} style={{ color: '#f59e0b', marginTop: '2px' }}>
+                          📌 {ex.nama}: {ex.satuan} ({formatRupiah(ex.harga)})
+                        </div>
+                      )
+                    ))}
+
+                    <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed #334155', color: '#10b981', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                      💰 Total Pengeluaran: {formatRupiah(item.total)}
+                    </div>
+                  </>
+                )}
 
               </div>
             ))}
