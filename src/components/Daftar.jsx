@@ -1,109 +1,162 @@
 import React, { useState } from 'react';
 
-export default function PengaturanPakan({ data, onUpdate, onBack, loading }) {
-  const [form, setForm] = useState(data);
-  const [list, setList] = useState([
-    { id: 1, jam: '08:00', durasi: '5' },
-    { id: 2, jam: '17:00', durasi: '5' }
-  ]);
-  const [jamBaru, setJamBaru] = useState('');
-  const [durasiBaru, setDurasiBaru] = useState('');
-  const [menuId, setMenuId] = useState(null);
+export default function Daftar({ onNavigate }) {
+  const [form, setForm] = useState({
+    nama: '',
+    email: '',
+    telepon: '',
+    password: '',
+    confirmPassword: ''
+  });
 
-  // Tambah Jadwal Baru
-  const handleTambah = (e) => {
+  // State untuk toggle tampil/sembunyi password
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleRegister = (e) => {
     e.preventDefault();
-    setList([...list, { id: Date.now(), jam: jamBaru, durasi: durasiBaru }]);
-    setJamBaru('');
-    setDurasiBaru('');
-  };
-
-  // Hapus Jadwal
-  const handleHapus = (id) => {
-    if (window.confirm("Yakin ingin menghapus jadwal ini?")) {
-      setList(list.filter(item => item.id !== id));
+    if (form.password !== form.confirmPassword) {
+      alert("Kata sandi tidak cocok!");
+      return;
     }
-    setMenuId(null);
-  };
-
-  // Edit Jadwal
-  const handleEdit = (item) => {
-    const jamEdit = prompt("Ubah Jam (HH:MM):", item.jam);
-    const durasiEdit = prompt("Ubah Durasi (Detik):", item.durasi);
-    if (jamEdit && durasiEdit) {
-      setList(list.map(i => i.id === item.id ? { ...i, jam: jamEdit, durasi: durasiEdit } : i));
-    }
-    setMenuId(null);
+    alert("Pendaftaran berhasil! Silakan masuk.");
+    onNavigate('masuk');
   };
 
   return (
     <div style={{ width: '100%' }}>
-      <button type="button" className="btn-primary" style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px' }} onClick={onBack}>
-        ← Kembali ke Menu
+      {/* Tombol Kembali */}
+      <button 
+        type="button" 
+        className="btn-primary" 
+        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px' }} 
+        onClick={() => onNavigate('welcome')}
+      >
+        ← Kembali
       </button>
 
-      <h3 style={{ color: '#38bdf8', textAlign: 'center', margin: '0 0 15px 0' }}>Pengaturan Jadwal Pakan</h3>
-
-      {/* Form Utama Rentang Tanggal */}
-      <form onSubmit={(e) => { e.preventDefault(); onUpdate(form); }} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-        <label style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold' }}>RENTANG TANGGAL</label>
-        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <input type="number" className="form-input" value={form.tglMulai} onChange={(e) => setForm({...form, tglMulai: e.target.value})} required />
-          <span style={{ color: '#94a3b8' }}>s/d</span>
-          <input type="number" className="form-input" value={form.tglSelesai} onChange={(e) => setForm({...form, tglSelesai: e.target.value})} required />
-        </div>
-
-        <button type="submit" className="btn-primary" style={{ backgroundColor: '#38bdf8', color: '#0f172a' }} disabled={loading}>
-          {loading ? 'MENYIMPAN...' : 'PERBARUI DATA & AKTIFKAN'}
-        </button>
-      </form>
-
-      <hr style={{ borderColor: '#334155', margin: '20px 0' }} />
-
-      {/* Form Tambah Jadwal Baru */}
-      <form onSubmit={handleTambah} style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '15px', background: '#0f172a', padding: '12px', borderRadius: '10px' }}>
-        <span style={{ fontSize: '0.8rem', color: '#38bdf8', fontWeight: 'bold' }}>+ Tambah Jadwal Pakan</span>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <input type="time" className="form-input" value={jamBaru} onChange={(e) => setJamBaru(e.target.value)} required />
-          <input type="number" className="form-input" placeholder="Detik" value={durasiBaru} onChange={(e) => setDurasiBaru(e.target.value)} required />
-        </div>
-        <button type="submit" className="btn-primary" style={{ backgroundColor: '#059669', padding: '8px', fontSize: '0.85rem' }}>
-          Simpan Jadwal
-        </button>
-      </form>
-
-      {/* Daftar Jadwal */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        {list.map((item) => (
-          <div key={item.id} style={{ background: '#334155', padding: '10px 14px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
-            <div>
-              <div style={{ fontWeight: 'bold', fontSize: '0.9rem' }}>🕒 {item.jam} WIB</div>
-              <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Durasi: {item.durasi} detik</div>
-            </div>
-
-            {/* Tombol Titik Tiga Vertikal (⋮) */}
-            <div style={{ position: 'relative' }}>
-              <button 
-                type="button" 
-                onClick={() => setMenuId(menuId === item.id ? null : item.id)} 
-                style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.3rem', cursor: 'pointer', padding: '0 5px', lineHeight: 1 }}
-                title="Menu"
-              >
-                ⋮
-              </button>
-
-              {/* Opsi Menu Dropdown: Edit & Hapus */}
-              {menuId === item.id && (
-                <div style={{ position: 'absolute', right: 0, top: '25px', background: '#1e293b', border: '1px solid #475569', borderRadius: '6px', zIndex: 5, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.3)' }}>
-                  <button type="button" onClick={() => handleEdit(item)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
-                  <button type="button" onClick={() => handleHapus(item.id)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
+      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <h3 style={{ color: '#ffffff', fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 5px 0' }}>PAKAN IKAN CERDAS</h3>
+        <p style={{ fontSize: '0.8rem', color: '#38bdf8', margin: 0 }}>Silakan isi data untuk mendaftar:</p>
       </div>
 
+      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+        
+        {/* Nama Lengkap */}
+        <div>
+          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Nama Lengkap</label>
+          <input 
+            type="text" 
+            className="form-input" 
+            name="nama"
+            placeholder="Masukkan Nama" 
+            value={form.nama} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+
+        {/* E-mail */}
+        <div>
+          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>E-mail</label>
+          <input 
+            type="email" 
+            className="form-input" 
+            name="email"
+            placeholder="nama@email.com" 
+            value={form.email} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+
+        {/* Nomor Telepon */}
+        <div>
+          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Nomor Telepon</label>
+          <input 
+            type="tel" 
+            className="form-input" 
+            name="telepon"
+            placeholder="0812..." 
+            value={form.telepon} 
+            onChange={handleChange} 
+            required 
+          />
+        </div>
+
+        {/* Buat Kata Sandi */}
+        <div>
+          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Buat Kata Sandi</label>
+          <div style={{ position: 'relative' }}>
+            <input 
+              type={showPass ? "text" : "password"} 
+              className="form-input" 
+              name="password"
+              placeholder="••••••••" 
+              value={form.password} 
+              onChange={handleChange} 
+              required 
+              style={{ paddingRight: '35px' }}
+            />
+            <button 
+              type="button" 
+              onClick={() => setShowPass(!showPass)}
+              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '0.9rem' }}
+            >
+              {showPass ? '👁️' : '👁️‍🗨️'}
+            </button>
+          </div>
+        </div>
+
+        {/* Ulangi Kata Sandi */}
+        <div>
+          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Kata Sandi</label>
+          <div style={{ position: 'relative' }}>
+            <input 
+              type={showConfirmPass ? "text" : "password"} 
+              className="form-input" 
+              name="confirmPassword"
+              placeholder="Ulangi Kata Sandi" 
+              value={form.confirmPassword} 
+              onChange={handleChange} 
+              required 
+              style={{ paddingRight: '35px' }}
+            />
+            <button 
+              type="button" 
+              onClick={() => setShowConfirmPass(!showConfirmPass)}
+              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '0.9rem' }}
+            >
+              {showConfirmPass ? '👁️' : '👁️‍🗨️'}
+            </button>
+          </div>
+        </div>
+
+        {/* Tombol Daftar Sekarang */}
+        <button 
+          type="submit" 
+          className="btn-primary" 
+          style={{ backgroundColor: '#f1f5f9', color: '#0f172a', fontWeight: 'bold', marginTop: '10px', borderRadius: '20px' }}
+        >
+          Daftar Sekarang
+        </button>
+      </form>
+
+      {/* Tautan Masuk */}
+      <div style={{ textAlign: 'center', marginTop: '15px' }}>
+        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0 0 4px 0' }}>Sudah punya akun?</p>
+        <button 
+          type="button" 
+          onClick={() => onNavigate('masuk')} 
+          style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem', textDecoration: 'underline', padding: 0 }}
+        >
+          Masuk di sini
+        </button>
+      </div>
     </div>
   );
 }
