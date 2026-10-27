@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// Fungsi helper untuk format angka ke Rupiah (Rp 10.000,00)
+// Fungsi helper format Rupiah (Rp 10.000,00)
 const formatRupiah = (angka) => {
   if (!angka || isNaN(angka)) return 'Rp 0,00';
   const numberString = Number(angka).toFixed(2).replace('.', ',');
@@ -19,14 +19,10 @@ const formatRupiah = (angka) => {
 };
 
 export default function Rab({ onBack }) {
-  // State form utama (tidak wajib diisi)
+  // State form utama (hanya Bibit Ikan & Pelet)
   const [form, setForm] = useState({
     bibitQty: '', bibitHarga: '',
-    alasQty: '', alasHarga: '',
-    peletQty: '', peletHarga: '',
-    dolomitQty: '', dolomitHarga: '',
-    garamQty: '', garamHarga: '',
-    vitaminQty: '', vitaminHarga: ''
+    peletQty: '', peletHarga: ''
   });
 
   // State untuk pengeluaran tambahan kustom
@@ -68,11 +64,7 @@ export default function Rab({ onBack }) {
   const handleEditJurnal = (item) => {
     setForm({
       bibitQty: item.bibitQty || '', bibitHarga: item.bibitHarga || '',
-      alasQty: item.alasQty || '', alasHarga: item.alasHarga || '',
-      peletQty: item.peletQty || '', peletHarga: item.peletHarga || '',
-      dolomitQty: item.dolomitQty || '', dolomitHarga: item.dolomitHarga || '',
-      garamQty: item.garamQty || '', garamHarga: item.garamHarga || '',
-      vitaminQty: item.vitaminQty || '', vitaminHarga: item.vitaminHarga || ''
+      peletQty: item.peletQty || '', peletHarga: item.peletHarga || ''
     });
     setExtraPengeluaran(item.extraPengeluaran || []);
     setEditJurnalId(item.id);
@@ -80,15 +72,11 @@ export default function Rab({ onBack }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Algoritma perhitungan total pengeluaran
+  // Algoritma perhitungan total pengeluaran (Bibit + Pelet + Tambahan)
   const hitungTotal = (currentForm, currentExtra) => {
     let total = 
       Number(currentForm.bibitHarga || 0) +
-      Number(currentForm.alasHarga || 0) +
-      Number(currentForm.peletHarga || 0) +
-      Number(currentForm.dolomitHarga || 0) +
-      Number(currentForm.garamHarga || 0) +
-      Number(currentForm.vitaminHarga || 0);
+      Number(currentForm.peletHarga || 0);
 
     if (currentExtra && currentExtra.length > 0) {
       currentExtra.forEach(ex => {
@@ -124,11 +112,7 @@ export default function Rab({ onBack }) {
     }
 
     // Reset Form
-    setForm({
-      bibitQty: '', bibitHarga: '', alasQty: '', alasHarga: '',
-      peletQty: '', peletHarga: '', dolomitQty: '', dolomitHarga: '',
-      garamQty: '', garamHarga: '', vitaminQty: '', vitaminHarga: ''
-    });
+    setForm({ bibitQty: '', bibitHarga: '', peletQty: '', peletHarga: '' });
     setExtraPengeluaran([]);
   };
 
@@ -146,7 +130,7 @@ export default function Rab({ onBack }) {
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
         <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
-          {editJurnalId ? 'Edit Jurnal RAB' : 'Masukkan rincian pengeluaran (tidak wajib diisi semua)'}
+          {editJurnalId ? 'Edit Jurnal RAB' : 'Masukkan rincian Bibit & Pelet (tidak wajib diisi semua)'}
         </p>
       </div>
 
@@ -161,48 +145,12 @@ export default function Rab({ onBack }) {
           </div>
         </div>
 
-        {/* 2. Harga Alas Kolam */}
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA ALAS KOLAM</label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="alasQty" placeholder="Ukuran (Meter)" value={form.alasQty} onChange={handleChange} />
-            <input type="number" className="form-input" name="alasHarga" placeholder="Harga (Rp)" value={form.alasHarga} onChange={handleChange} />
-          </div>
-        </div>
-
-        {/* 3. Harga Pelet */}
+        {/* 2. Harga Pelet */}
         <div>
           <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA PELET</label>
           <div style={{ display: 'flex', gap: '8px' }}>
             <input type="number" className="form-input" name="peletQty" placeholder="Berat (Gram)" value={form.peletQty} onChange={handleChange} />
             <input type="number" className="form-input" name="peletHarga" placeholder="Harga (Rp)" value={form.peletHarga} onChange={handleChange} />
-          </div>
-        </div>
-
-        {/* 4. Harga Kapur Dolomit */}
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA KAPUR DOLOMIT</label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="dolomitQty" placeholder="Berat (Gram)" value={form.dolomitQty} onChange={handleChange} />
-            <input type="number" className="form-input" name="dolomitHarga" placeholder="Harga (Rp)" value={form.dolomitHarga} onChange={handleChange} />
-          </div>
-        </div>
-
-        {/* 5. Harga Garam */}
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA GARAM</label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="garamQty" placeholder="Berat (Gram)" value={form.garamQty} onChange={handleChange} />
-            <input type="number" className="form-input" name="garamHarga" placeholder="Harga (Rp)" value={form.garamHarga} onChange={handleChange} />
-          </div>
-        </div>
-
-        {/* 6. Harga Vitamin Ikan */}
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>HARGA VITAMIN IKAN</label>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <input type="number" className="form-input" name="vitaminQty" placeholder="Jumlah" value={form.vitaminQty} onChange={handleChange} />
-            <input type="number" className="form-input" name="vitaminHarga" placeholder="Harga (Rp)" value={form.vitaminHarga} onChange={handleChange} />
           </div>
         </div>
 
@@ -257,7 +205,7 @@ export default function Rab({ onBack }) {
         </button>
       </form>
 
-      {/* --- BAGIAN DAFTAR JURNAL TERSIMPAN (DENGAN TOTAL PENGELUARAN) --- */}
+      {/* --- BAGIAN DAFTAR JURNAL TERSIMPAN --- */}
       <div style={{ marginTop: '25px', borderTop: '1px solid #334155', paddingTop: '15px' }}>
         <h4 style={{ color: '#38bdf8', fontSize: '0.85rem', marginBottom: '10px', textAlign: 'center' }}>Jurnal RAB Tersimpan</h4>
         
@@ -292,11 +240,7 @@ export default function Rab({ onBack }) {
                 </div>
 
                 {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor ({formatRupiah(item.bibitHarga)})</div>}
-                {item.alasHarga && <div>🟦 Alas Kolam: {item.alasQty} meter ({formatRupiah(item.alasHarga)})</div>}
                 {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram ({formatRupiah(item.peletHarga)})</div>}
-                {item.dolomitHarga && <div>⚪ Dolomit: {item.dolomitQty} gram ({formatRupiah(item.dolomitHarga)})</div>}
-                {item.garamHarga && <div>🧂 Garam: {item.garamQty} gram ({formatRupiah(item.garamHarga)})</div>}
-                {item.vitaminHarga && <div>💊 Vitamin: {item.vitaminQty} ({formatRupiah(item.vitaminHarga)})</div>}
                 
                 {item.extraPengeluaran && item.extraPengeluaran.map((ex, idx) => (
                   ex.nama && (
@@ -306,7 +250,7 @@ export default function Rab({ onBack }) {
                   )
                 ))}
 
-                {/* Bagian Total Pengeluaran */}
+                {/* Total Pengeluaran */}
                 <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed #334155', color: '#10b981', fontWeight: 'bold', fontSize: '0.8rem' }}>
                   💰 Total Pengeluaran: {formatRupiah(item.total)}
                 </div>
