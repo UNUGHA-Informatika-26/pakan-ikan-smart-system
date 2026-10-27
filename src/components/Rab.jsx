@@ -1,7 +1,25 @@
 import React, { useState } from 'react';
 
+// Fungsi helper untuk format angka ke Rupiah (Rp 10.000,00)
+const formatRupiah = (angka) => {
+  if (!angka || isNaN(angka)) return 'Rp 0,00';
+  const numberString = Number(angka).toFixed(2).replace('.', ',');
+  const split = numberString.split(',');
+  let sisa = split[0].length % 3;
+  let rupiah = split[0].substr(0, sisa);
+  let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+  if (ribuan) {
+    let separator = sisa ? '.' : '';
+    rupiah += separator + ribuan.join('.');
+  }
+
+  rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah + ',00';
+  return 'Rp ' + rupiah;
+};
+
 export default function Rab({ onBack }) {
-  // State untuk form utama
+  // State form utama (tidak wajib diisi)
   const [form, setForm] = useState({
     bibitQty: '', bibitHarga: '',
     alasQty: '', alasHarga: '',
@@ -13,16 +31,17 @@ export default function Rab({ onBack }) {
 
   // State untuk pengeluaran tambahan kustom
   const [extraPengeluaran, setExtraPengeluaran] = useState([]);
-  const [menuId, setMenuId] = useState(null);
+  const [menuExtraId, setMenuExtraId] = useState(null);
 
-  // State untuk daftar jurnal tersimpan
+  // State untuk jurnal tersimpan & mode edit
   const [jurnalList, setJurnalList] = useState([]);
+  const [menuJurnalId, setMenuJurnalId] = useState(null);
+  const [editJurnalId, setEditJurnalId] = useState(null);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // Tambah kolom pengeluaran manual baru
   const handleTambahPengeluaran = () => {
     setExtraPengeluaran([
       ...extraPengeluaran,
@@ -36,28 +55,85 @@ export default function Rab({ onBack }) {
 
   const handleHapusExtra = (id) => {
     setExtraPengeluaran(extraPengeluaran.filter(item => item.id !== id));
-    setMenuId(null);
+    setMenuExtraId(null);
   };
 
-  const handleEditExtra = (id) => {
-    setMenuId(null);
+  const handleHapusJurnal = (id) => {
+    if (window.confirm("Apakah Anda yakin ingin menghapus jurnal RAB ini?")) {
+      setJurnalList(jurnalList.filter(j => j.id !== id));
+    }
+    setMenuJurnalId(null);
+  };
+
+  const handleEditJurnal = (item) => {
+    setForm({
+      bibitQty: item.bibitQty || '', bibitHarga: item.bibitHarga || '',
+      alasQty: item.alasQty || '', alasHarga: item.alasHarga || '',
+      peletQty: item.peletQty || '', peletHarga: item.peletHarga || '',
+      dolomitQty: item.dolomitQty || '', dolomitHarga: item.dolomitHarga || '',
+      garamQty: item.garamQty || '', garamHarga: item.garamHarga || '',
+      vitaminQty: item.vitaminQty || '', vitaminHarga: item.vitaminHarga || ''
+    });
+    setExtraPengeluaran(item.extraPengeluaran || []);
+    setEditJurnalId(item.id);
+    setMenuJurnalId(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Algoritma perhitungan total pengeluaran
+  const hitungTotal = (currentForm, currentExtra) => {
+    let total = 
+      Number(currentForm.bibitHarga || 0) +
+      Number(currentForm.alasHarga || 0) +
+      Number(currentForm.peletHarga || 0) +
+      Number(currentForm.dolomitHarga || 0) +
+      Number(currentForm.garamHarga || 0) +
+      Number(currentForm.vitaminHarga || 0);
+
+    if (currentExtra && currentExtra.length > 0) {
+      currentExtra.forEach(ex => {
+        total += Number(ex.harga || 0);
+      });
+    }
+    return total;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const dataBaru = {
-      id: Date.now(),
-      ...form,
-      extraPengeluaran,
-      tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
-    };
-    setJurnalList([dataBaru, ...jurnalList]);
-    alert("Jurnal RAB Berhasil Disimpan!");
+    const totalPengeluaran = hitungTotal(form, extraPengeluaran);
+
+    if (editJurnalId) {
+      setJurnalList(jurnalList.map(j => j.id === editJurnalId ? {
+        ...j,
+        ...form,
+        extraPengeluaran,
+        total: totalPengeluaran
+      } : j));
+      setEditJurnalId(null);
+      alert("Jurnal RAB Berhasil Diperbarui!");
+    } else {
+      const dataBaru = {
+        id: Date.now(),
+        ...form,
+        extraPengeluaran,
+        total: totalPengeluaran,
+        tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+      };
+      setJurnalList([dataBaru, ...jurnalList]);
+      alert("Jurnal RAB Berhasil Disimpan!");
+    }
+
+    // Reset Form
+    setForm({
+      bibitQty: '', bibitHarga: '', alasQty: '', alasHarga: '',
+      peletQty: '', peletHarga: '', dolomitQty: '', dolomitHarga: '',
+      garamQty: '', garamHarga: '', vitaminQty: '', vitaminHarga: ''
+    });
+    setExtraPengeluaran([]);
   };
 
   return (
     <div style={{ width: '100%' }}>
-      {/* Tombol Kembali */}
       <button 
         type="button" 
         className="btn-primary" 
@@ -69,7 +145,9 @@ export default function Rab({ onBack }) {
 
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
         <h3 style={{ color: '#38bdf8', fontSize: '1.1rem', margin: '0 0 5px 0' }}>Rencana Anggaran & Jurnal RAB</h3>
-        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>Masukkan rincian pengeluaran (tidak wajib diisi semua)</p>
+        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: 0 }}>
+          {editJurnalId ? 'Edit Jurnal RAB' : 'Masukkan rincian pengeluaran (tidak wajib diisi semua)'}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
@@ -134,20 +212,17 @@ export default function Rab({ onBack }) {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
               <label style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: 'bold' }}>PENGELUARAN TAMBAHAN {index + 1}</label>
               
-              {/* Tombol Titik Tiga Vertikal (⋮) */}
               <div style={{ position: 'relative' }}>
                 <button 
                   type="button" 
-                  onClick={() => setMenuId(menuId === item.id ? null : item.id)} 
+                  onClick={() => setMenuExtraId(menuExtraId === item.id ? null : item.id)} 
                   style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', padding: '0 5px' }}
                 >
                   ⋮
                 </button>
 
-                {/* Dropdown Edit / Hapus */}
-                {menuId === item.id && (
+                {menuExtraId === item.id && (
                   <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.4)' }}>
-                    <button type="button" onClick={() => handleEditExtra(item.id)} style={{ display: 'block', width: '100%', padding: '6px 12px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
                     <button type="button" onClick={() => handleHapusExtra(item.id)} style={{ display: 'block', width: '100%', padding: '6px 12px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
                   </div>
                 )}
@@ -164,7 +239,6 @@ export default function Rab({ onBack }) {
           </div>
         ))}
 
-        {/* Tombol Tambah Pengeluaran */}
         <button 
           type="button" 
           onClick={handleTambahPengeluaran}
@@ -173,17 +247,17 @@ export default function Rab({ onBack }) {
           + Tambah Pengeluaran
         </button>
 
-        {/* Tombol Simpan */}
+        {/* Tombol Simpan / Perbarui */}
         <button 
           type="submit" 
           className="btn-primary" 
-          style={{ backgroundColor: '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}
+          style={{ backgroundColor: editJurnalId ? '#38bdf8' : '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '10px' }}
         >
-          Simpan ke Jurnal RAB
+          {editJurnalId ? 'Simpan Perubahan Jurnal' : 'Simpan ke Jurnal RAB'}
         </button>
       </form>
 
-      {/* Bagian Daftar Jurnal Tersimpan */}
+      {/* --- BAGIAN DAFTAR JURNAL TERSIMPAN (DENGAN TOTAL PENGELUARAN) --- */}
       <div style={{ marginTop: '25px', borderTop: '1px solid #334155', paddingTop: '15px' }}>
         <h4 style={{ color: '#38bdf8', fontSize: '0.85rem', marginBottom: '10px', textAlign: 'center' }}>Jurnal RAB Tersimpan</h4>
         
@@ -192,23 +266,51 @@ export default function Rab({ onBack }) {
             Belum ada jurnal RAB tersimpan.
           </div>
         ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {jurnalList.map((item) => (
-              <div key={item.id} style={{ background: '#1e293b', padding: '10px 12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
-                <div style={{ color: '#38bdf8', fontWeight: 'bold', marginBottom: '6px' }}>📅 {item.tanggal}</div>
-                {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor (Rp {Number(item.bibitHarga).toLocaleString()})</div>}
-                {item.alasHarga && <div>🟦 Alas Kolam: {item.alasQty} meter (Rp {Number(item.alasHarga).toLocaleString()})</div>}
-                {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram (Rp {Number(item.peletHarga).toLocaleString()})</div>}
-                {item.dolomitHarga && <div>⚪ Dolomit: {item.dolomitQty} gram (Rp {Number(item.dolomitHarga).toLocaleString()})</div>}
-                {item.garamHarga && <div>🧂 Garam: {item.garamQty} gram (Rp {Number(item.garamHarga).toLocaleString()})</div>}
-                {item.vitaminHarga && <div>💊 Vitamin: {item.vitaminQty} (Rp {Number(item.vitaminHarga).toLocaleString()})</div>}
+              <div key={item.id} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                  <div style={{ color: '#38bdf8', fontWeight: 'bold' }}>📅 {item.tanggal}</div>
+                  
+                  <div style={{ position: 'relative' }}>
+                    <button 
+                      type="button" 
+                      onClick={() => setMenuJurnalId(menuJurnalId === item.id ? null : item.id)} 
+                      style={{ background: 'none', border: 'none', color: '#fff', fontSize: '1.2rem', cursor: 'pointer', padding: '0 5px' }}
+                    >
+                      ⋮
+                    </button>
+
+                    {menuJurnalId === item.id && (
+                      <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+                        <button type="button" onClick={() => handleEditJurnal(item)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
+                        <button type="button" onClick={() => handleHapusJurnal(item.id)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {item.bibitHarga && <div>🐟 Bibit: {item.bibitQty} ekor ({formatRupiah(item.bibitHarga)})</div>}
+                {item.alasHarga && <div>🟦 Alas Kolam: {item.alasQty} meter ({formatRupiah(item.alasHarga)})</div>}
+                {item.peletHarga && <div>🥣 Pelet: {item.peletQty} gram ({formatRupiah(item.peletHarga)})</div>}
+                {item.dolomitHarga && <div>⚪ Dolomit: {item.dolomitQty} gram ({formatRupiah(item.dolomitHarga)})</div>}
+                {item.garamHarga && <div>🧂 Garam: {item.garamQty} gram ({formatRupiah(item.garamHarga)})</div>}
+                {item.vitaminHarga && <div>💊 Vitamin: {item.vitaminQty} ({formatRupiah(item.vitaminHarga)})</div>}
+                
                 {item.extraPengeluaran && item.extraPengeluaran.map((ex, idx) => (
                   ex.nama && (
                     <div key={idx} style={{ color: '#f59e0b', marginTop: '2px' }}>
-                      📌 {ex.nama}: {ex.satuan} (Rp {Number(ex.harga).toLocaleString()})
+                      📌 {ex.nama}: {ex.satuan} ({formatRupiah(ex.harga)})
                     </div>
                   )
                 ))}
+
+                {/* Bagian Total Pengeluaran */}
+                <div style={{ marginTop: '8px', paddingTop: '6px', borderTop: '1px dashed #334155', color: '#10b981', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                  💰 Total Pengeluaran: {formatRupiah(item.total)}
+                </div>
+
               </div>
             ))}
           </div>
