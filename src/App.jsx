@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// Import semua komponen modular
+// Import semua komponen modular (Termasuk Akun)
 import Welcome from './components/Welcome';
 import Daftar from './components/Daftar';
 import Masuk from './components/Masuk';
@@ -11,6 +11,7 @@ import PengaturanPakan from './components/PengaturanPakan';
 import Jurnal from './components/Jurnal';
 import Wifi from './components/Wifi';
 import Rab from './components/Rab';
+import Akun from './components/Akun'; // <-- 1. IMPORT KOMPONEN AKUN DI SINI
 
 const supabase = createClient('https://tqfspwtaexpxlmflaskd.supabase.co', 'sb_publishable_QTf6sd3BIoxhRf7u67-1JA_lPiLm_EB');
 
@@ -20,9 +21,28 @@ function App() {
     return localStorage.getItem('app_screen') || 'welcome';
   });
 
-  // State Sub-Menu di dalam Beranda (beranda, pengaturan, jurnal, wifi, rab)
+  // State Sub-Menu di dalam Beranda (beranda, pengaturan, jurnal, wifi, rab, akun)
   const [activePage, setActivePage] = useState('beranda');
   const [loading, setLoading] = useState(false);
+
+  // Data Akun Pengguna (Disimpan ke localStorage agar tidak hilang saat di-refresh)
+  const [akunData, setAkunData] = useState(() => {
+    try {
+      const savedAkun = localStorage.getItem('user_akun_data');
+      return savedAkun ? JSON.parse(savedAkun) : {
+        nama: 'Dewi Santika',
+        email: 'dewi.santika@gmail.com',
+        noHp: '081234567890'
+      };
+    } catch (e) {
+      return { nama: 'Dewi Santika', email: 'dewi.santika@gmail.com', noHp: '081234567890' };
+    }
+  });
+
+  // Simpan otomatis data Akun ke localStorage setiap ada perubahan
+  useEffect(() => {
+    localStorage.setItem('user_akun_data', JSON.stringify(akunData));
+  }, [akunData]);
 
   // Data Pakan
   const [pakanData, setPakanData] = useState({
@@ -218,6 +238,16 @@ function App() {
                 onUpdateWifi={handleUpdateWifi} 
                 onBack={() => setActivePage('beranda')} 
                 loading={loading} 
+              />
+            )}
+
+            {/* 2. TAMBAHKAN KONDISI HALAMAN AKUN DI SINI */}
+            {activePage === 'akun' && (
+              <Akun 
+                akunData={akunData}
+                onUpdateAkun={setAkunData}
+                onBack={() => setActivePage('beranda')} 
+                onLogout={() => changeScreen('welcome')} 
               />
             )}
           </>

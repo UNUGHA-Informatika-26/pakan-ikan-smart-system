@@ -34,7 +34,14 @@ export default function Beranda({ setActivePage, onLogout, catatanLength }) {
         <small style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Ganti Koneksi Internet Alat</small>
       </div>
 
-      {/* Tombol Keluar / Akun */}
+      {/* --- MENU BARU: AKUN --- */}
+      <div className="card-menu" onClick={() => setActivePage('akun')}>
+        <div style={{ fontSize: '28px', marginBottom: '4px' }}>👤</div>
+        <div style={{ fontWeight: 'bold', fontSize: '0.95rem' }}>Akun</div>
+        <small style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Kelola Data Pengguna</small>
+      </div>
+
+      {/* Tombol Keluar Akun */}
       <button 
         type="button"
         onClick={onLogout} 
