@@ -1,19 +1,11 @@
-const CACHE_NAME = 'pakan-ikan-cache-v1';
-const urlsToCache = [
-  '/',
-  '/index.html'
-];
-
-// Install Service Worker
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
+  event.waitUntil(self.skipWaiting());
 });
 
-// Fetch data dari cache
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim());
+});
+
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
