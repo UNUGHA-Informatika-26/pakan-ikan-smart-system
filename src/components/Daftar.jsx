@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react'; // 1. Tambahkan useState di sini
 
 export default function Daftar({ handleRegister, rNama, setRNama, rMail, setRMail, rHp, setRHp, rPass, setRPass, rPass2, setRPass2, regErr, setCurrentScreen, styles }) {
+  
+  // 2. Tambahkan state untuk mengontrol buka/tutup mata password
+  const [showPass, setShowPass] = useState(false);
+  const [showPass2, setShowPass2] = useState(false); // Opsional untuk konfirmasi sandi
+
   return (
     <section className="screen auth-screen" style={styles?.screen || { padding: '20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
@@ -25,14 +30,66 @@ export default function Daftar({ handleRegister, rNama, setRNama, rMail, setRMai
           <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="tel" placeholder="0812 3456 7890" value={rHp} onChange={e => setRHp(e.target.value)} />
         </div>
 
-        <div>
+        {/* 3. BAGIAN BUAT KATA SANDI (Diberi position: relative & tombol ikon mata) */}
+        <div style={{ position: 'relative' }}>
           <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Buat Kata Sandi</label>
-          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="password" placeholder="Min. 8 karakter" value={rPass} onChange={e => setRPass(e.target.value)} />
+          <input 
+            style={{ width: '100%', padding: '10px 40px 10px 10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff', boxSizing: 'border-box' }} 
+            type={showPass ? "text" : "password"} 
+            placeholder="Min. 8 karakter" 
+            value={rPass} 
+            onChange={e => setRPass(e.target.value)} 
+          />
+          
+          <button 
+            type="button" 
+            onClick={() => setShowPass(!showPass)} 
+            style={{ position: 'absolute', right: '12px', top: '32px', background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center' }}
+          >
+            {showPass ? (
+              /* Mata Terbuka (Tanpa Silang) */
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            ) : (
+              /* Mata Tertutup (Dengan Garis Silang) */
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            )}
+          </button>
         </div>
 
-        <div>
+        {/* 4. BAGIAN KONFIRMASI KATA SANDI (Opsional, diberi ikon mata juga agar konsisten) */}
+        <div style={{ position: 'relative' }}>
           <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Konfirmasi Kata Sandi</label>
-          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="password" placeholder="Ulangi Kata Sandi" value={rPass2} onChange={e => setRPass2(e.target.value)} />
+          <input 
+            style={{ width: '100%', padding: '10px 40px 10px 10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff', boxSizing: 'border-box' }} 
+            type={showPass2 ? "text" : "password"} 
+            placeholder="Ulangi Kata Sandi" 
+            value={rPass2} 
+            onChange={e => setRPass2(e.target.value)} 
+          />
+
+          <button 
+            type="button" 
+            onClick={() => setShowPass2(!showPass2)} 
+            style={{ position: 'absolute', right: '12px', top: '32px', background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', alignItems: 'center' }}
+          >
+            {showPass2 ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+              </svg>
+            )}
+          </button>
         </div>
 
         {regErr && <p style={{ color: '#ef4444', fontSize: '0.8rem' }}>{regErr}</p>}
