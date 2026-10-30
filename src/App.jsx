@@ -96,6 +96,7 @@ function App() {
   };
 
   // Handler Proses Pendaftaran
+  // Handler Proses Pendaftaran
   const handleRegister = (e) => {
     e.preventDefault();
     if (!rNama || !rMail || !rPass) {
@@ -106,8 +107,16 @@ function App() {
       setRegErr('Kata sandi tidak sama!');
       return;
     }
-    // Simpan data akun baru ke state & localStorage
-    setAkunData({ nama: rNama, email: rMail, noHp: rHp || '081234567890' });
+
+    // Simpan data pendaftaran ke state akunData agar muncul di Menu Akun
+    const dataAkunBaru = {
+      nama: rNama,
+      email: rMail,
+      noHp: rHp || '081234567890'
+    };
+    setAkunData(dataAkunBaru);
+    localStorage.setItem('user_akun_data', JSON.stringify(dataAkunBaru));
+
     alert('Pendaftaran berhasil! Selamat datang.');
     changeScreen('menu');
   };
