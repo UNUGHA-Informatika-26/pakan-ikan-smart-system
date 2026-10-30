@@ -11,7 +11,7 @@ import PengaturanPakan from './components/PengaturanPakan';
 import Jurnal from './components/Jurnal';
 import Wifi from './components/Wifi';
 import Rab from './components/Rab';
-import Akun from './components/Akun'; // <-- 1. IMPORT KOMPONEN AKUN DI SINI
+import Akun from './components/Akun';
 
 const supabase = createClient('https://tqfspwtaexpxlmflaskd.supabase.co', 'sb_publishable_QTf6sd3BIoxhRf7u67-1JA_lPiLm_EB');
 
@@ -180,79 +180,69 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* 1. Halaman Welcome */}
+      {currentScreen === 'welcome' && <Welcome setCurrentScreen={changeScreen} />}
       
-      {/* HEADER UTAMA APLIKASI */}
-      <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <h2 style={{ margin: '0', color: '#38bdf8', fontSize: '1.25rem', fontWeight: 'bold' }}>PAKAN IKAN CERDAS</h2>
-        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '4px 0 0 0', letterSpacing: '0.05em' }}>KSTM AL IHYA</p>
-      </div>
+      {/* 2. Halaman Daftar */}
+      {currentScreen === 'daftar' && <Daftar onNavigate={changeScreen} />}
 
-      <main>
-        {/* 1. Halaman Welcome */}
-       {currentScreen === 'welcome' && <Welcome setCurrentScreen={setCurrentScreen} />}
-        {/* 2. Halaman Daftar */}
-        {currentScreen === 'daftar' && <Daftar onNavigate={changeScreen} />}
+      {/* 3. Halaman Masuk */}
+      {currentScreen === 'masuk' && <Masuk onNavigate={changeScreen} />}
 
-        {/* 3. Halaman Masuk */}
-        {currentScreen === 'masuk' && <Masuk onNavigate={changeScreen} />}
+      {/* 4. Menu Utama & Fitur Aplikasi */}
+      {currentScreen === 'menu' && (
+        <>
+          {activePage === 'beranda' && (
+            <Beranda 
+              setActivePage={setActivePage} 
+              onLogout={() => changeScreen('welcome')} 
+              catatanLength={catatan.length} 
+            />
+          )}
 
-        {/* 4. Menu Utama & Fitur Aplikasi */}
-        {currentScreen === 'menu' && (
-          <>
-            {activePage === 'beranda' && (
-              <Beranda 
-                setActivePage={setActivePage} 
-                onLogout={() => changeScreen('welcome')} 
-                catatanLength={catatan.length} 
-              />
-            )}
+          {activePage === 'rab' && (
+            <Rab 
+              rabList={rabList} 
+              onSaveRab={handleSaveRab} 
+              onDeleteRab={handleDeleteRab} 
+              onBack={() => setActivePage('beranda')} 
+            />
+          )}
 
-            {activePage === 'rab' && (
-              <Rab 
-                rabList={rabList} 
-                onSaveRab={handleSaveRab} 
-                onDeleteRab={handleDeleteRab} 
-                onBack={() => setActivePage('beranda')} 
-              />
-            )}
+          {activePage === 'pengaturan' && (
+            <PengaturanPakan 
+              data={pakanData} 
+              onUpdate={handleUpdatePakan} 
+              onBack={() => setActivePage('beranda')} 
+              loading={loading} 
+            />
+          )}
 
-            {activePage === 'pengaturan' && (
-              <PengaturanPakan 
-                data={pakanData} 
-                onUpdate={handleUpdatePakan} 
-                onBack={() => setActivePage('beranda')} 
-                loading={loading} 
-              />
-            )}
+          {activePage === 'jurnal' && (
+            <Jurnal 
+              onBack={() => setActivePage('beranda')} 
+            />
+          )}
 
-            {activePage === 'jurnal' && (
-              <Jurnal 
-                onBack={() => setActivePage('beranda')} 
-              />
-            )}
+          {activePage === 'wifi' && (
+            <Wifi 
+              wifiData={wifiData} 
+              onUpdateWifi={handleUpdateWifi} 
+              onBack={() => setActivePage('beranda')} 
+              loading={loading} 
+            />
+          )}
 
-            {activePage === 'wifi' && (
-              <Wifi 
-                wifiData={wifiData} 
-                onUpdateWifi={handleUpdateWifi} 
-                onBack={() => setActivePage('beranda')} 
-                loading={loading} 
-              />
-            )}
-
-            {/* 2. TAMBAHKAN KONDISI HALAMAN AKUN DI SINI */}
-            {activePage === 'akun' && (
-              <Akun 
-                akunData={akunData}
-                onUpdateAkun={setAkunData}
-                onBack={() => setActivePage('beranda')} 
-                onLogout={() => changeScreen('welcome')} 
-              />
-            )}
-          </>
-        )}
-      </main>
-
+          {activePage === 'akun' && (
+            <Akun 
+              akunData={akunData}
+              onUpdateAkun={setAkunData}
+              onBack={() => setActivePage('beranda')} 
+              onLogout={() => changeScreen('welcome')} 
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

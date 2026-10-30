@@ -3,17 +3,12 @@ import React from 'react';
 export default function Welcome({ setCurrentScreen }) {
   return (
     <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      width: '100vw',
-      height: '100vh',
-      backgroundColor: '#0f172a',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      zIndex: 9999,
+      width: '100%',
+      minHeight: '100vh',
       padding: '20px',
       boxSizing: 'border-box'
     }}>
@@ -31,7 +26,7 @@ export default function Welcome({ setCurrentScreen }) {
         Kelola Pakan Ikanmu Dengan Cerdas!
       </p>
 
-      {/* Tombol Daftar yang Aman dan Bisa Diklik */}
+      {/* Tombol Daftar */}
       <button 
         type="button"
         onClick={() => setCurrentScreen('daftar')} 
@@ -45,9 +40,7 @@ export default function Welcome({ setCurrentScreen }) {
           border: 'none', 
           borderRadius: '25px', 
           fontWeight: 'bold', 
-          cursor: 'pointer',
-          pointerEvents: 'auto',
-          zIndex: 10000
+          cursor: 'pointer'
         }} 
       >
         Daftar
@@ -65,9 +58,7 @@ export default function Welcome({ setCurrentScreen }) {
             cursor: 'pointer', 
             fontWeight: 'bold', 
             fontSize: '0.85rem', 
-            padding: 0,
-            pointerEvents: 'auto',
-            zIndex: 10000
+            padding: 0 
           }} 
         >
           Masuk di sini
