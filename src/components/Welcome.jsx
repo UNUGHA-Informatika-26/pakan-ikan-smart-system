@@ -13,13 +13,18 @@ export default function Welcome({ setCurrentScreen }) {
       boxSizing: 'border-box'
     }}>
       
-      {/* Logo Ikan SVG Transparan (Tanpa Background Hitam) */}
+      {/* Logo Ikan Asli dari /foto-192.png dengan latar belakang disatukan */}
       <div style={{ marginBottom: '15px', display: 'flex', justifyContent: 'center' }}>
-        <svg width="75" height="75" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 12C20 15.3137 16.4183 18 12 18C10.154 18 8.46132 17.5147 7.10557 16.691L3 18L4.309 13.8944C3.48528 12.5387 3 10.846 3 9C3 4.58172 6.58172 1 11 1C15.4183 1 19 4.58172 19 9C19 10.0315 18.8028 11.0205 18.4411 11.9392C19.4187 11.9793 20 12 20 12Z" fill="#10b981"/>
-          <circle cx="14" cy="8" r="1.5" fill="#0f172a"/>
-          <path d="M3 9L7 11" stroke="#0f172a" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
+        <img 
+          src="/foto-192.png" 
+          alt="Logo Pakan Ikan" 
+          style={{ 
+            width: '85px', 
+            height: '85px', 
+            objectFit: 'contain',
+            mixBlendMode: 'screen' // Menghilangkan kotak hitam bawaan gambar agar transparan
+          }} 
+        />
       </div>
       
       <h1 style={{ color: '#ffffff', fontSize: '1.4rem', fontWeight: 'bold', marginBottom: '8px', letterSpacing: '1px', textAlign: 'center' }}>
