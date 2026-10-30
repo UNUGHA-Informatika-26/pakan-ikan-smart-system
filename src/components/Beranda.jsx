@@ -41,8 +41,6 @@ export default function Beranda({ setActivePage, onLogout, catatanLength }) {
         <small style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Kelola Data Pengguna</small>
       </div>
 
-    
-
     </div>
   );
 }
