@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function JurnalHarian({ onBack }) {
   // State form utama Jurnal Harian
@@ -9,13 +9,26 @@ export default function JurnalHarian({ onBack }) {
     keterangan: ''
   });
 
-  // State daftar jurnal tersimpan
-  const [jurnalList, setJurnalList] = useState([]);
+  // State daftar jurnal tersimpan (sinkron dengan localStorage agar aman dari refresh)
+  const [jurnalList, setJurnalList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("jurnalDataV2");
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
   const [activeMenuId, setActiveMenuId] = useState(null);
 
   // State untuk edit langsung di dalam kartu
   const [editingIndex, setEditingIndex] = useState(null);
   const [editForm, setEditForm] = useState({});
+
+  // Simpan otomatis ke localStorage setiap ada perubahan jurnalList
+  useEffect(() => {
+    localStorage.setItem("jurnalDataV2", JSON.stringify(jurnalList));
+  }, [jurnalList]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -46,10 +59,10 @@ export default function JurnalHarian({ onBack }) {
   const startEdit = (item, index) => {
     setEditingIndex(index);
     setEditForm({
-      jumlahAwal: item.jumlahAwal || '',
-      ikanMati: item.ikanMati || '',
-      kondisiAir: item.kondisiAir || '',
-      keterangan: item.keterangan || ''
+      jumlahAwal: item?.jumlahAwal || '',
+      ikanMati: item?.ikanMati || '',
+      kondisiAir: item?.kondisiAir || '',
+      keterangan: item?.keterangan || ''
     });
     setActiveMenuId(null);
   };
@@ -70,12 +83,12 @@ export default function JurnalHarian({ onBack }) {
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', boxSizing: 'border-box' }}>
       {/* Tombol Kembali */}
       <button 
         type="button" 
         className="btn-primary" 
-        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px' }} 
+        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px', cursor: 'pointer' }} 
         onClick={onBack}
       >
         ← Kembali ke Menu
@@ -120,7 +133,7 @@ export default function JurnalHarian({ onBack }) {
         <button 
           type="submit" 
           className="btn-primary" 
-          style={{ backgroundColor: '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '5px' }}
+          style={{ backgroundColor: '#10b981', color: '#ffffff', fontWeight: 'bold', marginTop: '5px', cursor: 'pointer' }}
         >
           💾 Simpan Jurnal Harian
         </button>
@@ -137,11 +150,11 @@ export default function JurnalHarian({ onBack }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {jurnalList.map((item, index) => (
-              <div key={item.id} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
+              <div key={item.id || index} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
                 
                 {/* Header Kartu */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                  <div style={{ color: '#38bdf8', fontWeight: 'bold' }}>📅 {item.tanggal}</div>
+                  <div style={{ color: '#38bdf8', fontWeight: 'bold' }}>📅 {item.tanggal || 'Hari ini'}</div>
                   
                   {editingIndex !== index && (
                     <div style={{ position: 'relative' }}>
@@ -170,22 +183,22 @@ export default function JurnalHarian({ onBack }) {
                     
                     <div>
                       <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Jumlah Awal Ikan (Ekor):</span>
-                      <input type="number" className="form-input" name="jumlahAwal" value={editForm.jumlahAwal} onChange={handleEditChange} />
+                      <input type="number" className="form-input" name="jumlahAwal" value={editForm.jumlahAwal || ''} onChange={handleEditChange} />
                     </div>
 
                     <div>
                       <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Jumlah Ikan Mati (Ekor):</span>
-                      <input type="number" className="form-input" name="ikanMati" value={editForm.ikanMati} onChange={handleEditChange} />
+                      <input type="number" className="form-input" name="ikanMati" value={editForm.ikanMati || ''} onChange={handleEditChange} />
                     </div>
 
                     <div>
                       <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Kondisi Air:</span>
-                      <input type="text" className="form-input" name="kondisiAir" value={editForm.kondisiAir} onChange={handleEditChange} />
+                      <input type="text" className="form-input" name="kondisiAir" value={editForm.kondisiAir || ''} onChange={handleEditChange} />
                     </div>
 
                     <div>
                       <span style={{ color: '#94a3b8', fontSize: '0.65rem' }}>Catatan / Keterangan:</span>
-                      <textarea className="form-input" name="keterangan" rows="2" value={editForm.keterangan} onChange={handleEditChange}></textarea>
+                      <textarea className="form-input" name="keterangan" rows="2" value={editForm.keterangan || ''} onChange={handleEditChange}></textarea>
                     </div>
 
                     <div style={{ display: 'flex', gap: '6px', marginTop: '4px' }}>
