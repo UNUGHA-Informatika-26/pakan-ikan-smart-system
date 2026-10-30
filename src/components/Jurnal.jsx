@@ -9,7 +9,7 @@ export default function JurnalHarian({ onBack }) {
     keterangan: ''
   });
 
-  // State daftar jurnal tersimpan (sinkron dengan localStorage agar aman dari refresh)
+  // State daftar jurnal tersimpan (sinkron dengan localStorage)
   const [jurnalList, setJurnalList] = useState(() => {
     try {
       const saved = localStorage.getItem("jurnalDataV2");
@@ -64,7 +64,7 @@ export default function JurnalHarian({ onBack }) {
       kondisiAir: item?.kondisiAir || '',
       keterangan: item?.keterangan || ''
     });
-    setActiveMenuId(null);
+    setActiveMenuId(null); // Tutup menu dropdown setelah tombol edit diklik
   };
 
   const handleEditChange = (e) => {
@@ -150,7 +150,7 @@ export default function JurnalHarian({ onBack }) {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {jurnalList.map((item, index) => (
-              <div key={item.id || index} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem' }}>
+              <div key={item.id || index} style={{ position: 'relative', background: '#1e293b', padding: '12px', borderRadius: '8px', border: '1px solid #334155', fontSize: '0.75rem', overflow: 'visible' }}>
                 
                 {/* Header Kartu */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -167,7 +167,7 @@ export default function JurnalHarian({ onBack }) {
                       </button>
 
                       {activeMenuId === index && (
-                        <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 10, overflow: 'hidden', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+                        <div style={{ position: 'absolute', right: 0, top: '25px', background: '#0f172a', border: '1px solid #475569', borderRadius: '6px', zIndex: 99, overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.7)', minWidth: '90px' }}>
                           <button type="button" onClick={() => startEdit(item, index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#38bdf8', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem', borderBottom: '1px solid #334155' }}>Edit</button>
                           <button type="button" onClick={() => handleHapusJurnal(index)} style={{ display: 'block', width: '100%', padding: '8px 14px', background: 'none', border: 'none', color: '#ef4444', textAlign: 'left', cursor: 'pointer', fontSize: '0.75rem' }}>Hapus</button>
                         </div>
