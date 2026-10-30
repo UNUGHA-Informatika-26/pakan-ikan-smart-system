@@ -24,6 +24,18 @@ function App() {
   const [activePage, setActivePage] = useState('beranda');
   const [loading, setLoading] = useState(false);
 
+  // State Form Input Register & Login
+  const [rNama, setRNama] = useState('');
+  const [rMail, setRMail] = useState('');
+  const [rHp, setRHp] = useState('');
+  const [rPass, setRPass] = useState('');
+  const [rPass2, setRPass2] = useState('');
+  const [regErr, setRegErr] = useState('');
+
+  const [lMail, setLMail] = useState('');
+  const [lPass, setLPass] = useState('');
+  const [loginErr, setLoginErr] = useState('');
+
   // Data Akun Pengguna
   const [akunData, setAkunData] = useState(() => {
     try {
@@ -81,6 +93,34 @@ function App() {
   const changeScreen = (screenName) => {
     setCurrentScreen(screenName);
     localStorage.setItem('app_screen', screenName);
+  };
+
+  // Handler Proses Pendaftaran
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (!rNama || !rMail || !rPass) {
+      setRegErr('Mohon isi semua data dengan lengkap!');
+      return;
+    }
+    if (rPass !== rPass2) {
+      setRegErr('Kata sandi tidak sama!');
+      return;
+    }
+    // Simpan data akun baru ke state & localStorage
+    setAkunData({ nama: rNama, email: rMail, noHp: rHp || '081234567890' });
+    alert('Pendaftaran berhasil! Selamat datang.');
+    changeScreen('menu');
+  };
+
+  // Handler Proses Masuk (Login)
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!lMail || !lPass) {
+      setLoginErr('Email dan kata sandi harus diisi!');
+      return;
+    }
+    alert('Berhasil masuk!');
+    changeScreen('menu');
   };
 
   // Fetch data awal dari Supabase
@@ -177,10 +217,29 @@ function App() {
       {currentScreen === 'welcome' && <Welcome setCurrentScreen={changeScreen} />}
       
       {/* Halaman Daftar */}
-      {currentScreen === 'daftar' && <Daftar onNavigate={changeScreen} />}
+      {currentScreen === 'daftar' && (
+        <Daftar 
+          handleRegister={handleRegister}
+          rNama={rNama} setRNama={setRNama}
+          rMail={rMail} setRMail={setRMail}
+          rHp={rHp} setRHp={setRHp}
+          rPass={rPass} setRPass={setRPass}
+          rPass2={rPass2} setRPass2={setRPass2}
+          regErr={regErr}
+          onNavigate={changeScreen}
+        />
+      )}
 
       {/* Halaman Masuk */}
-      {currentScreen === 'masuk' && <Masuk onNavigate={changeScreen} />}
+      {currentScreen === 'masuk' && (
+        <Masuk 
+          handleLogin={handleLogin}
+          lMail={lMail} setLMail={setLMail}
+          lPass={lPass} setLPass={setLPass}
+          loginErr={loginErr}
+          onNavigate={changeScreen}
+        />
+      )}
 
       {/* Menu Utama & Fitur Aplikasi */}
       {currentScreen === 'menu' && (
