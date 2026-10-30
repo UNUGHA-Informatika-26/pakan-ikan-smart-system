@@ -189,8 +189,7 @@ function App() {
 
       <main>
         {/* 1. Halaman Welcome */}
-        {currentScreen === 'welcome' && <Welcome onNavigate={changeScreen} />}
-
+       {currentScreen === 'welcome' && <Welcome setCurrentScreen={setCurrentScreen} />}
         {/* 2. Halaman Daftar */}
         {currentScreen === 'daftar' && <Daftar onNavigate={changeScreen} />}
 
