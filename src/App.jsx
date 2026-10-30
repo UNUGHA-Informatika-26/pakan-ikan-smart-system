@@ -95,24 +95,48 @@ function App() {
     localStorage.setItem('app_screen', screenName);
   };
 
-  // Handler Proses Pendaftaran
-  // Handler Proses Pendaftaran
+  // Handler Proses Pendaftaran dengan Validasi Ketat (.com / domain wajib)
   const handleRegister = (e) => {
     e.preventDefault();
-    if (!rNama || !rMail || !rPass) {
-      setRegErr('Mohon isi semua data dengan lengkap!');
-      return;
-    }
-    if (rPass !== rPass2) {
-      setRegErr('Kata sandi tidak sama!');
+    setRegErr('');
+
+    // Validasi Kolom Kosong
+    if (!rNama || !rMail || !rHp || !rPass || !rPass2) {
+      setRegErr('Semua kolom wajib diisi!');
       return;
     }
 
-    // Simpan data pendaftaran ke state akunData agar muncul di Menu Akun
+    // Validasi Format Email (wajib mengandung '@' dan berakhiran '.com' atau domain lain yang valid)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(rMail) || !rMail.toLowerCase().includes('.com')) {
+      setRegErr('Format email tidak valid! Wajib menggunakan format email yang benar dan berakhiran .com (contoh: nama@email.com)');
+      return;
+    }
+
+    // Validasi Nomor Telepon (wajib diawali '08' dan panjang 10-13 digit)
+    const phoneRegex = /^08\d{8,11}$/;
+    if (!phoneRegex.test(rHp)) {
+      setRegErr('Nomor telepon tidak valid! Harus diawali "08" dan terdiri dari 10-12 digit angka.');
+      return;
+    }
+
+    // Validasi Panjang Kata Sandi (Minimal 8 karakter)
+    if (rPass.length < 8) {
+      setRegErr('Kata sandi terlalu pendek! Minimal harus 8 karakter.');
+      return;
+    }
+
+    // Validasi Kesesuaian Konfirmasi Kata Sandi
+    if (rPass !== rPass2) {
+      setRegErr('Konfirmasi kata sandi tidak sama!');
+      return;
+    }
+
+    // Jika Semua Validasi Lolos
     const dataAkunBaru = {
       nama: rNama,
       email: rMail,
-      noHp: rHp || '081234567890'
+      noHp: rHp
     };
     setAkunData(dataAkunBaru);
     localStorage.setItem('user_akun_data', JSON.stringify(dataAkunBaru));
@@ -121,13 +145,27 @@ function App() {
     changeScreen('menu');
   };
 
-  // Handler Proses Masuk (Login)
+  // Handler Proses Masuk (Login) dengan Validasi Ketat (.com)
   const handleLogin = (e) => {
     e.preventDefault();
+    setLoginErr('');
+
     if (!lMail || !lPass) {
-      setLoginErr('Email dan kata sandi harus diisi!');
+      setLoginErr('Email dan kata sandi wajib diisi!');
       return;
     }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(lMail) || !lMail.toLowerCase().includes('.com')) {
+      setLoginErr('Format email untuk masuk tidak valid! Harus berakhiran .com');
+      return;
+    }
+
+    if (lPass.length < 8) {
+      setLoginErr('Kata sandi minimal 8 karakter!');
+      return;
+    }
+
     alert('Berhasil masuk!');
     changeScreen('menu');
   };

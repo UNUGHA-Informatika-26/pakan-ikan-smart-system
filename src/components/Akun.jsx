@@ -1,35 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-export default function Akun({ onBack, onLogout }) {
-  // State data akun pengguna
-  const [akun, setAkun] = useState({
-    nama: 'Dewi Santika',
-    email: 'dewi.santika@gmail.com',
-    noHp: '081234567890'
+export default function Akun({ akunData, onUpdateAkun, onBack, onLogout }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [tempAkun, setTempAkun] = useState(akunData || {
+    nama: '',
+    email: '',
+    noHp: ''
   });
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [tempAkun, setTempAkun] = useState(akun);
+  // Sinkronisasi jika akunData dari App.jsx berubah
+  useEffect(() => {
+    if (akunData) {
+      setTempAkun(akunData);
+    }
+  }, [akunData]);
 
   const handleChange = (e) => {
     setTempAkun({ ...tempAkun, [e.target.name]: e.target.value });
   };
 
-  // Simpan semua perubahan sekaligus dalam satu kali klik
+  // Simpan perubahan dan perbarui state global di App.jsx + localStorage
   const handleSave = (e) => {
     e.preventDefault();
-    setAkun(tempAkun);
+    onUpdateAkun(tempAkun);
+    localStorage.setItem('user_akun_data', JSON.stringify(tempAkun));
     setIsEditing(false);
     alert("Data Akun Berhasil Diperbarui!");
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', boxSizing: 'border-box' }}>
       {/* Tombol Kembali ke Menu Utama */}
       <button 
         type="button" 
         className="btn-primary" 
-        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px' }} 
+        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px', cursor: 'pointer' }} 
         onClick={onBack}
       >
         ← Kembali ke Menu
@@ -47,24 +52,24 @@ export default function Akun({ onBack, onLogout }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <div>
               <span style={{ color: '#94a3b8', fontSize: '0.7rem', display: 'block' }}>NAMA PENGGUNA</span>
-              <strong style={{ color: '#38bdf8', fontSize: '0.9rem' }}>👤 {akun.nama}</strong>
+              <strong style={{ color: '#38bdf8', fontSize: '0.9rem' }}>👤 {akunData?.nama || 'Belum diisi'}</strong>
             </div>
 
             <div>
               <span style={{ color: '#94a3b8', fontSize: '0.7rem', display: 'block' }}>EMAIL</span>
-              <span style={{ color: '#e2e8f0' }}>✉️ {akun.email}</span>
+              <span style={{ color: '#e2e8f0' }}>✉️ {akunData?.email || 'Belum diisi'}</span>
             </div>
 
             <div>
               <span style={{ color: '#94a3b8', fontSize: '0.7rem', display: 'block' }}>NOMOR HP</span>
-              <span style={{ color: '#e2e8f0' }}>📱 {akun.noHp}</span>
+              <span style={{ color: '#e2e8f0' }}>📱 {akunData?.noHp || 'Belum diisi'}</span>
             </div>
 
             <button 
               type="button" 
-              onClick={() => { setTempAkun(akun); setIsEditing(true); }}
+              onClick={() => { setTempAkun(akunData); setIsEditing(true); }}
               className="btn-primary"
-              style={{ backgroundColor: '#38bdf8', color: '#0f172a', fontWeight: 'bold', marginTop: '10px' }}
+              style={{ backgroundColor: '#38bdf8', color: '#0f172a', fontWeight: 'bold', marginTop: '10px', cursor: 'pointer' }}
             >
               Edit Data Akun
             </button>
