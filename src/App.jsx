@@ -182,8 +182,8 @@ function App() {
     <div className="app-container">
       
       
-        {/* 1. Halaman Welcome */}
-       {currentScreen === 'welcome' && <Welcome setCurrentScreen={setCurrentScreen} />}
+       {/* 1. Halaman Welcome */}
+       {currentScreen === 'welcome' && <Welcome setCurrentScreen={changeScreen} />}
         {/* 2. Halaman Daftar */}
         {currentScreen === 'daftar' && <Daftar onNavigate={changeScreen} />}
 
