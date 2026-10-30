@@ -1,162 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function Daftar({ onNavigate }) {
-  const [form, setForm] = useState({
-    nama: '',
-    email: '',
-    telepon: '',
-    password: '',
-    confirmPassword: ''
-  });
-
-  // State untuk toggle tampil/sembunyi password
-  const [showPass, setShowPass] = useState(false);
-  const [showConfirmPass, setShowConfirmPass] = useState(false);
-
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleRegister = (e) => {
-    e.preventDefault();
-    if (form.password !== form.confirmPassword) {
-      alert("Kata sandi tidak cocok!");
-      return;
-    }
-    alert("Pendaftaran berhasil! Silakan masuk.");
-    onNavigate('masuk');
-  };
-
+export default function Daftar({ handleRegister, rNama, setRNama, rMail, setRMail, rHp, setRHp, rPass, setRPass, rPass2, setRPass2, regErr, setCurrentScreen, styles }) {
   return (
-    <div style={{ width: '100%' }}>
-      {/* Tombol Kembali */}
-      <button 
-        type="button" 
-        className="btn-primary" 
-        style={{ backgroundColor: '#1e293b', border: '1px solid #334155', marginBottom: '15px' }} 
-        onClick={() => onNavigate('welcome')}
-      >
-        ← Kembali
-      </button>
-
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <h3 style={{ color: '#ffffff', fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 5px 0' }}>PAKAN IKAN CERDAS</h3>
-        <p style={{ fontSize: '0.8rem', color: '#38bdf8', margin: 0 }}>Silakan isi data untuk mendaftar:</p>
+    <section className="screen auth-screen" style={styles?.screen || { padding: '20px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+        <img src="/foto-192.png" alt="Logo" style={{ width: '50px', height: '50px', objectFit: 'contain', marginBottom: '5px' }} />
+        <h1 style={{ color: '#ffffff', fontSize: '1.2rem', fontWeight: 'bold' }}>SMART PAKAN IKAN</h1>
+        <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>Silakan isi data untuk mendaftar:</p>
       </div>
 
-      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+      <form onSubmit={handleRegister} style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', maxWidth: '320px', margin: '0 auto' }}>
+        <div>
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Nama Lengkap</label>
+          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="text" placeholder="Masukkan Nama Anda" value={rNama} onChange={e => setRNama(e.target.value)} />
+        </div>
         
-        {/* Nama Lengkap */}
         <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Nama Lengkap</label>
-          <input 
-            type="text" 
-            className="form-input" 
-            name="nama"
-            placeholder="Masukkan Nama" 
-            value={form.nama} 
-            onChange={handleChange} 
-            required 
-          />
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Email</label>
+          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="email" placeholder="nama@email.com" value={rMail} onChange={e => setRMail(e.target.value)} />
         </div>
 
-        {/* E-mail */}
         <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>E-mail</label>
-          <input 
-            type="email" 
-            className="form-input" 
-            name="email"
-            placeholder="nama@email.com" 
-            value={form.email} 
-            onChange={handleChange} 
-            required 
-          />
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Nomor Telepon</label>
+          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="tel" placeholder="0812 3456 7890" value={rHp} onChange={e => setRHp(e.target.value)} />
         </div>
 
-        {/* Nomor Telepon */}
         <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Nomor Telepon</label>
-          <input 
-            type="tel" 
-            className="form-input" 
-            name="telepon"
-            placeholder="0812..." 
-            value={form.telepon} 
-            onChange={handleChange} 
-            required 
-          />
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Buat Kata Sandi</label>
+          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="password" placeholder="Min. 8 karakter" value={rPass} onChange={e => setRPass(e.target.value)} />
         </div>
 
-        {/* Buat Kata Sandi */}
         <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Buat Kata Sandi</label>
-          <div style={{ position: 'relative' }}>
-            <input 
-              type={showPass ? "text" : "password"} 
-              className="form-input" 
-              name="password"
-              placeholder="••••••••" 
-              value={form.password} 
-              onChange={handleChange} 
-              required 
-              style={{ paddingRight: '35px' }}
-            />
-            <button 
-              type="button" 
-              onClick={() => setShowPass(!showPass)}
-              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '0.9rem' }}
-            >
-              {showPass ? '👁️' : '👁️‍🗨️'}
-            </button>
-          </div>
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Konfirmasi Kata Sandi</label>
+          <input style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff' }} type="password" placeholder="Ulangi Kata Sandi" value={rPass2} onChange={e => setRPass2(e.target.value)} />
         </div>
 
-        {/* Ulangi Kata Sandi */}
-        <div>
-          <label style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 'bold', display: 'block', marginBottom: '4px' }}>Kata Sandi</label>
-          <div style={{ position: 'relative' }}>
-            <input 
-              type={showConfirmPass ? "text" : "password"} 
-              className="form-input" 
-              name="confirmPassword"
-              placeholder="Ulangi Kata Sandi" 
-              value={form.confirmPassword} 
-              onChange={handleChange} 
-              required 
-              style={{ paddingRight: '35px' }}
-            />
-            <button 
-              type="button" 
-              onClick={() => setShowConfirmPass(!showConfirmPass)}
-              style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8', fontSize: '0.9rem' }}
-            >
-              {showConfirmPass ? '👁️' : '👁️‍🗨️'}
-            </button>
-          </div>
-        </div>
-
-        {/* Tombol Daftar Sekarang */}
-        <button 
-          type="submit" 
-          className="btn-primary" 
-          style={{ backgroundColor: '#f1f5f9', color: '#0f172a', fontWeight: 'bold', marginTop: '10px', borderRadius: '20px' }}
-        >
+        {regErr && <p style={{ color: '#ef4444', fontSize: '0.8rem' }}>{regErr}</p>}
+        
+        <button style={{ width: '100%', marginTop: '5px', padding: '10px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer' }} type="submit">
           Daftar Sekarang
         </button>
       </form>
 
-      {/* Tautan Masuk */}
-      <div style={{ textAlign: 'center', marginTop: '15px' }}>
-        <p style={{ fontSize: '0.75rem', color: '#94a3b8', margin: '0 0 4px 0' }}>Sudah punya akun?</p>
+      <p style={{ textAlign: 'center', marginTop: '15px', color: '#94a3b8', fontSize: '0.8rem' }}>
+        Sudah punya akun?{' '}
         <button 
-          type="button" 
-          onClick={() => onNavigate('masuk')} 
-          style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem', textDecoration: 'underline', padding: 0 }}
+          style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem', padding: 0 }} 
+          onClick={() => setCurrentScreen('masuk')} 
+          type="button"
         >
           Masuk di sini
         </button>
-      </div>
-    </div>
+      </p>
+    </section>
   );
 }
