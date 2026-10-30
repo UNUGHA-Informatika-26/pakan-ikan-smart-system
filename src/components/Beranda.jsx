@@ -41,14 +41,7 @@ export default function Beranda({ setActivePage, onLogout, catatanLength }) {
         <small style={{ color: '#94a3b8', fontSize: '0.75rem' }}>Kelola Data Pengguna</small>
       </div>
 
-      {/* Tombol Keluar Akun */}
-      <button 
-        type="button"
-        onClick={onLogout} 
-        style={{ background: 'transparent', border: '1px solid #ef4444', color: '#ef4444', padding: '12px', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', marginTop: '10px', fontSize: '0.85rem' }}
-      >
-        Keluar Akun
-      </button>
+    
 
     </div>
   );
