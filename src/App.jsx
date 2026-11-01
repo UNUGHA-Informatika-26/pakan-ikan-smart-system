@@ -43,10 +43,9 @@ function App() {
       return savedAkun ? JSON.parse(savedAkun) : {
         nama: 'Dewi Santika',
         email: 'dewi.santika@gmail.com',
-        noHp: '081234567890'
       };
     } catch (e) {
-      return { nama: 'Dewi Santika', email: 'dewi.santika@gmail.com', noHp: '081234567890' };
+      return { nama: 'Dewi Santika', email: 'dewi.santika@gmail.com' };
     }
   });
 
@@ -96,8 +95,82 @@ function App() {
   };
 
   
-  // Handler Proses Masuk (Login) dengan Validasi Ketat (.com)
-  const handleLogin = (e) => {
+  // Handler Proses Pendaftaran dengan Konfirmasi Email Supabase Auth
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    setRegErr('');
+
+    // Validasi Input Dasar
+    if (!rNama || !rMail || !rHp || !rPass || !rPass2) {
+      setRegErr('Semua kolom wajib diisi!');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(rMail) || !rMail.toLowerCase().includes('.com')) {
+      setRegErr('Format email tidak valid! Wajib berakhiran .com');
+      return;
+    }
+
+    const phoneRegex = /^08\d{8,10}$/;
+    if (!phoneRegex.test(rHp)) {
+      setRegErr('Nomor telepon tidak valid! Wajib diawali "08" dan terdiri dari 10-12 digit.');
+      return;
+    }
+
+    if (rPass.length < 8) {
+      setRegErr('Kata sandi minimal 8 karakter!');
+      return;
+    }
+
+    if (rPass !== rPass2) {
+      setRegErr('Konfirmasi kata sandi tidak sama!');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // 1. Daftarkan Pengguna ke Supabase Auth
+      const { data, error } = await supabase.auth.signUp({
+        email: rMail,
+        password: rPass,
+        options: {
+          data: {
+            full_name: rNama,
+            phone_number: rHp,
+          },
+          emailRedirectTo: window.location.origin, // Kembali ke aplikasi setelah klik link
+        },
+      });
+
+      if (error) throw error;
+
+      // 2. Simpan Sementara Data Akun ke State & LocalStorage
+      const dataAkunBaru = {
+        nama: rNama,
+        email: rMail,
+        noHp: rHp
+      };
+      setAkunData(dataAkunBaru);
+      localStorage.setItem('user_akun_data', JSON.stringify(dataAkunBaru));
+
+      // 3. Tampilkan Notifikasi Instruksi Konfirmasi Email
+      alert(
+        `Link konfirmasi keamanan telah dikirim ke email ${rMail}.\n\nSilakan buka aplikasi Gmail di HP Anda dan klik tombol "Konfirmasi Login" untuk menyelesaikan pendaftaran!`
+      );
+
+      // Kembalikan pengguna ke layar masuk
+      changeScreen('masuk');
+    } catch (err) {
+      setRegErr('Gagal mendaftar: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handler Proses Masuk (Login) Memeriksa Status Konfirmasi Email
+  const handleLogin = async (e) => {
     e.preventDefault();
     setLoginErr('');
 
@@ -108,7 +181,7 @@ function App() {
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(lMail) || !lMail.toLowerCase().includes('.com')) {
-      setLoginErr('Format email untuk masuk tidak valid! Harus berakhiran .com');
+      setLoginErr('Format email tidak valid! Wajib berakhiran .com');
       return;
     }
 
@@ -117,8 +190,45 @@ function App() {
       return;
     }
 
-    alert('Berhasil masuk!');
-    changeScreen('menu');
+    setLoading(true);
+
+    try {
+
+      // Login ke Supabase Auth
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: lMail,
+        password: lPass,
+      });
+
+      if (error) {
+        throw new Error('Kata sandi atau email salah! Pastikan Anda memasukkan data yang terdaftar.');
+      }
+
+      // Periksa apakah email sudah dikonfirmasi via Gmail di HP
+      if (data.user && !data.user.email_confirmed_at) {
+        setLoginErr('Email Anda belum dikonfirmasi! Silakan periksa inbox/spam di Gmail Anda lalu tekan link konfirmasi terlebih dahulu.');
+        return;
+      }
+
+      // Update data akun dari meta data Supabase jika tersedia
+      const userData = data.user.user_metadata;
+      if (userData) {
+        const loggedInAkun = {
+          nama: userData.full_name || akunData.nama,
+          email: data.user.email,
+          noHp: userData.phone_number || akunData.noHp
+        };
+        setAkunData(loggedInAkun);
+        localStorage.setItem('user_akun_data', JSON.stringify(loggedInAkun));
+      }
+
+      alert('Berhasil masuk! Akun terverifikasi.');
+      changeScreen('menu');
+    } catch (err) {
+      setLoginErr('Gagal masuk: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Fetch data awal dari Supabase
@@ -144,6 +254,20 @@ function App() {
       }
     };
     fetchData();
+  }, []);
+
+  // Deteksi Otomatis Klik Konfirmasi Email dari Gmail
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session?.user?.email_confirmed_at) {
+        // Pengguna berhasil dikonfirmasi dari email
+        changeScreen('menu');
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const handleUpdatePakan = async (newData) => {

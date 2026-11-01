@@ -18,31 +18,39 @@ export default function Masuk({ handleLogin, lMail, setLMail, lPass, setLPass, l
       </div>
 
       <div style={{ textAlign: 'center', marginBottom: '15px' }}>
-        {/* LOGO IKAN DI ATAS SUDAH DIHAPUS */}
         <h1 style={{ color: '#ffffff', fontSize: '1.2rem', fontWeight: 'bold' }}>SMART PAKAN IKAN</h1>
         <p style={{ color: '#94a3b8', fontSize: '0.8rem' }}>Silakan masuk ke akun Anda:</p>
       </div>
 
+      {/* Tampilan Error jika Login Gagal */}
+      {loginErr && (
+        <div style={{ background: '#7f1d1d', color: '#fca5a5', padding: '8px', borderRadius: '6px', fontSize: '0.75rem', marginBottom: '10px', textAlign: 'center', zIndex: 20, position: 'relative' }}>
+          {loginErr}
+        </div>
+      )}
+
       <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%', maxWidth: '320px', margin: '0 auto' }}>
         <div>
-          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Email</label>
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Email</label>
           <input 
             style={{ width: '100%', padding: '10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff', boxSizing: 'border-box' }} 
             type="email" 
             placeholder="nama@email.com" 
             value={lMail} 
             onChange={e => setLMail(e.target.value)} 
+            required 
           />
         </div>
 
         <div style={{ position: 'relative' }}>
-          <label style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Kata Sandi</label>
+          <label style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'block', marginBottom: '3px' }}>Kata Sandi</label>
           <input 
             style={{ width: '100%', padding: '10px 40px 10px 10px', borderRadius: '8px', border: '1px solid #334155', background: '#1e293b', color: '#fff', boxSizing: 'border-box' }} 
             type={showPass ? "text" : "password"} 
             placeholder="Min. 8 karakter" 
             value={lPass} 
             onChange={e => setLPass(e.target.value)} 
+            required 
           />
 
           <button 
@@ -57,11 +65,9 @@ export default function Masuk({ handleLogin, lMail, setLMail, lPass, setLPass, l
             )}
           </button>
         </div>
-
-        {loginErr && <p style={{ color: '#ef4444', fontSize: '0.8rem' }}>{loginErr}</p>}
         
         <button 
-          style={{ width: '100%', marginTop: '10px', padding: '10px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer', zIndex: 20 }} 
+          style={{ width: '100%', marginTop: '10px', padding: '10px', background: '#38bdf8', color: '#0f172a', border: 'none', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer', zIndex: 20 }} 
           type="submit"
         >
           Masuk
@@ -70,13 +76,12 @@ export default function Masuk({ handleLogin, lMail, setLMail, lPass, setLPass, l
 
       <p style={{ textAlign: 'center', marginTop: '15px', color: '#94a3b8', fontSize: '0.8rem', position: 'relative', zIndex: 20 }}>
         Belum punya akun?{' '}
-        <button 
-          style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem', padding: '5px', zIndex: 30 }} 
+        <span 
+          style={{ color: '#38bdf8', cursor: 'pointer', fontWeight: 'bold' }} 
           onClick={() => onNavigate('daftar')} 
-          type="button"
         >
           Daftar di sini
-        </button>
+        </span>
       </p>
     </section>
   );
